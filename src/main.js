@@ -14,6 +14,16 @@ function loadScript() {
 
 	const overlay = window.document.createElement("div");
 	overlay.id = "welcome-toast-overlay";
+	setOverlay(
+		widthViewport,
+		heightViewport,
+		widthTarget,
+		heightTarget,
+		xTarget,
+		yTarget,
+	);
+	app.insertAdjacentElement("afterend", overlay);
+
 	function setOverlay(
 		widthViewport,
 		heigthViewport,
@@ -39,33 +49,25 @@ function loadScript() {
       </svg>
       `;
 	}
-	setOverlay(
-		widthViewport,
-		heightViewport,
-		widthTarget,
-		heightTarget,
-		xTarget,
-		yTarget,
-	);
-	app.insertAdjacentElement("afterend", overlay);
 
 	function handleWindowResize() {
 		const { width: widthViewport, height: heightViewport } =
 			window.visualViewport;
-		const {
+		let {
 			width: widthTarget,
 			height: heightTarget,
 			x: xTarget,
 			y: yTarget,
 		} = target.getBoundingClientRect();
+		yTarget = Math.ceil(yTarget) - 5;
 
 		setOverlay(
 			widthViewport,
 			heightViewport,
-			xTarget,
-			yTarget,
 			widthTarget,
 			heightTarget,
+			xTarget,
+			yTarget,
 		);
 	}
 
