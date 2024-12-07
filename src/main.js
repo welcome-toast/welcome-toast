@@ -112,8 +112,18 @@ function loadScript() {
 		);
 	}
 
+	function handleRemovePopover(event) {
+		if (event.target.tagName === "path") {
+			overlay.remove();
+			popover.remove();
+			return;
+		}
+		return;
+	}
+
 	window.addEventListener("resize", handleOverlayWindowResize);
 	window.addEventListener("resize", handlePopoverWindowResize);
+	window.addEventListener("click", (event) => handleRemovePopover(event));
 }
 
 window.addEventListener("load", loadScript);
