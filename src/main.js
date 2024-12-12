@@ -1,26 +1,64 @@
 console.log("@welcome-toast");
 
-function loadScript() {
-  const WHITE_SPACE = 5;
-  const { width: widthViewport, height: heightViewport } = window.visualViewport;
-  const target = document.querySelector("#welcome-toast-hl");
+const WHITE_SPACE = 5;
+const { width: widthViewport, height: heightViewport } = window.visualViewport;
+let targetElement = null;
+let message = "";
+let overlay = null;
+
+function applyAction() {
+  const { target_element_id, message_title, message_body, background_opacity } = message;
+  targetElement = document.querySelector(`#${target_element_id}`);
+
+  if (!targetElement) {
+    return;
+  }
+
   const {
     width: widthTarget,
     height: heightTarget,
     x: xTarget,
     y: yTarget,
-  } = target.getBoundingClientRect();
+  } = targetElement.getBoundingClientRect();
   const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
 
-  const overlay = window.document.createElement("div");
+  overlay = window.document.createElement("div");
   overlay.id = "welcomeToastOverlay";
-  setOverlay(widthViewport, heightViewport, widthTarget, heightTarget, xTarget, yTargetInLayout);
-  app.insertAdjacentElement("afterend", overlay);
+  document.body.appendChild(overlay);
+  setOverlay(
+    widthViewport,
+    heightViewport,
+    widthTarget,
+    heightTarget,
+    xTarget,
+    yTargetInLayout,
+    background_opacity,
+  );
 
   const popover = window.document.createElement("div");
   popover.id = "welcomeToastPopover";
   overlay.insertAdjacentElement("afterend", popover);
   setPopover();
+
+  function handleOverlayWindowResize() {
+    const {
+      width: widthTarget,
+      height: heightTarget,
+      x: xTarget,
+      y: yTarget,
+    } = targetElement.getBoundingClientRect();
+    const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
+
+    return setOverlay(
+      widthViewport,
+      heightViewport,
+      widthTarget,
+      heightTarget,
+      xTarget,
+      yTargetInLayout,
+      background_opacity,
+    );
+  }
 
   function setPopover() {
     const xTargetInLayout = xTarget + widthTarget + WHITE_SPACE;
@@ -32,9 +70,9 @@ function loadScript() {
     popoverDescription.id = "welcomeToastPopoverDescription";
     popoverFooter.id = "welcomeToastPopoverFooter";
 
-    popoverHeader.innerHTML = "<span>header area</span>";
-    popoverDescription.innerHTML = "<span>desc area</span>";
-    popoverFooter.innerHTML = "<span>footer area</span>";
+    popoverHeader.innerHTML = `<span>${message_title}</span>`;
+    popoverDescription.innerHTML = `<span>${message_body}</span>`;
+    popoverFooter.innerHTML = `<span>${message_body}</span>`;
 
     popover.appendChild(popoverHeader);
     popover.appendChild(popoverDescription);
@@ -45,51 +83,11 @@ function loadScript() {
   }
 
   function handlePopoverWindowResize() {
-    const { width: widthTarget, x: xTarget, y: yTarget } = target.getBoundingClientRect();
+    const { width: widthTarget, x: xTarget, y: yTarget } = targetElement.getBoundingClientRect();
     const xTargetInLayout = xTarget + widthTarget + WHITE_SPACE;
     popover.style.top = `${yTarget}px`;
     popover.style.left = `${xTargetInLayout}px`;
     return;
-  }
-
-  function setOverlay(widthViewport, heigthViewport, widthTarget, heightTarget, xTarget, yTarget) {
-    overlay.innerHTML = `
-        <svg
-          viewBox="0 0 ${widthViewport} ${heigthViewport}"
-          xmlSpace="preserve"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
-          version="1.1"
-          preserveAspectRatio="xMinYMin slice"
-          style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2; z-index: 10000; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%;"
-        >
-          <path
-            d="M${widthViewport},0L0,0L0,${heigthViewport}L${widthViewport},${heigthViewport}L${widthViewport},0Z M${xTarget},${yTarget} h${widthTarget} a5,5 0 0 1 5,5 v${heightTarget} a5,5 0 0 1 -5,5 h-${widthTarget} a5,5 0 0 1 -5,-5 v-${heightTarget} a5,5 0 0 1 5,-5 z"
-            style="fill: rgb(0, 0, 0); opacity: 0.7; pointer-events: auto; cursor: auto;"
-          >
-          </path>
-        </svg>
-    `;
-    return;
-  }
-
-  function handleOverlayWindowResize() {
-    const { width: widthViewport, height: heightViewport } = window.visualViewport;
-    const {
-      width: widthTarget,
-      height: heightTarget,
-      x: xTarget,
-      y: yTarget,
-    } = target.getBoundingClientRect();
-    const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
-
-    return setOverlay(
-      widthViewport,
-      heightViewport,
-      widthTarget,
-      heightTarget,
-      xTarget,
-      yTargetInLayout,
-    );
   }
 
   function handleRemovePopover(event) {
@@ -106,4 +104,70 @@ function loadScript() {
   window.addEventListener("click", (event) => handleRemovePopover(event));
 }
 
-window.addEventListener("load", loadScript);
+window.addEventListener("message", (e) => {
+  message = e.data;
+  if (!overlay) {
+    applyAction();
+  } else {
+    const popoverHeader = document.getElementById("welcomeToastPopoverHeader");
+    const popoverDescription = document.getElementById("welcomeToastPopoverDescription");
+    const popoverFooter = document.getElementById("welcomeToastPopoverFooter");
+
+    const { message_title, message_body, background_opacity } = message;
+    const {
+      width: widthTarget,
+      height: heightTarget,
+      x: xTarget,
+      y: yTarget,
+    } = targetElement.getBoundingClientRect();
+    const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
+
+    setOverlay(
+      widthViewport,
+      heightViewport,
+      widthTarget,
+      heightTarget,
+      xTarget,
+      yTargetInLayout,
+      background_opacity,
+    );
+
+    popoverHeader.innerHTML = `<span>${message_title}</span>`;
+    popoverDescription.innerHTML = `<span>${message_body}</span>`;
+    popoverFooter.innerHTML = `<span>${message_body}</span>`;
+  }
+});
+
+window.addEventListener("click", (e) => {
+  const target = JSON.parse(JSON.stringify(e.target.id));
+  window.parent.postMessage({ target }, "*");
+});
+
+function setOverlay(
+  widthViewport,
+  heigthViewport,
+  widthTarget,
+  heightTarget,
+  xTarget,
+  yTarget,
+  background_opacity,
+) {
+  overlay.innerHTML = `
+      <svg
+        viewBox="0 0 ${widthViewport} ${heigthViewport}"
+        xmlSpace="preserve"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        preserveAspectRatio="xMinYMin slice"
+        style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2; z-index: 10000; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%;"
+      >
+        <path
+          id="overlayPath"
+          d="M${widthViewport},0L0,0L0,${heigthViewport}L${widthViewport},${heigthViewport}L${widthViewport},0Z M${xTarget},${yTarget} h${widthTarget} a5,5 0 0 1 5,5 v${heightTarget} a5,5 0 0 1 -5,5 h-${widthTarget} a5,5 0 0 1 -5,-5 v-${heightTarget} a5,5 0 0 1 5,-5 z"
+          style="fill: rgb(0, 0, 0); opacity: ${background_opacity / 100}; pointer-events: auto; cursor: auto;"
+        >
+        </path>
+      </svg>
+  `;
+  return;
+}
