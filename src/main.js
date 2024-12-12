@@ -1,7 +1,6 @@
 console.log("@welcome-toast");
 
 const WHITE_SPACE = 5;
-const { width: widthViewport, height: heightViewport } = window.visualViewport;
 let targetElement = null;
 let message = "";
 let overlay = null;
@@ -9,6 +8,7 @@ let overlay = null;
 function applyAction() {
   const { target_element_id, message_title, message_body, background_opacity } = message;
   targetElement = document.querySelector(`#${target_element_id}`);
+  const { width: widthViewport, height: heightViewport } = window.visualViewport;
 
   if (!targetElement) {
     return;
@@ -41,6 +41,7 @@ function applyAction() {
   setPopover();
 
   function handleOverlayWindowResize() {
+    const { width: widthViewport, height: heightViewport } = window.visualViewport;
     const {
       width: widthTarget,
       height: heightTarget,
@@ -104,6 +105,35 @@ function applyAction() {
   window.addEventListener("click", (event) => handleRemovePopover(event));
 }
 
+function setOverlay(
+  widthViewport,
+  heigthViewport,
+  widthTarget,
+  heightTarget,
+  xTarget,
+  yTarget,
+  background_opacity,
+) {
+  overlay.innerHTML = `
+      <svg
+        viewBox="0 0 ${widthViewport} ${heigthViewport}"
+        xmlSpace="preserve"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        preserveAspectRatio="xMinYMin slice"
+        style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2; z-index: 10000; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%;"
+      >
+        <path
+          id="overlayPath"
+          d="M${widthViewport},0L0,0L0,${heigthViewport}L${widthViewport},${heigthViewport}L${widthViewport},0Z M${xTarget},${yTarget} h${widthTarget} a5,5 0 0 1 5,5 v${heightTarget} a5,5 0 0 1 -5,5 h-${widthTarget} a5,5 0 0 1 -5,-5 v-${heightTarget} a5,5 0 0 1 5,-5 z"
+          style="fill: rgb(0, 0, 0); opacity: ${background_opacity / 100}; pointer-events: auto; cursor: auto;"
+        >
+        </path>
+      </svg>
+  `;
+  return;
+}
+
 window.addEventListener("message", (e) => {
   message = e.data;
   if (!overlay) {
@@ -142,32 +172,3 @@ window.addEventListener("click", (e) => {
   const target = JSON.parse(JSON.stringify(e.target.id));
   window.parent.postMessage({ target }, "*");
 });
-
-function setOverlay(
-  widthViewport,
-  heigthViewport,
-  widthTarget,
-  heightTarget,
-  xTarget,
-  yTarget,
-  background_opacity,
-) {
-  overlay.innerHTML = `
-      <svg
-        viewBox="0 0 ${widthViewport} ${heigthViewport}"
-        xmlSpace="preserve"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        version="1.1"
-        preserveAspectRatio="xMinYMin slice"
-        style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2; z-index: 10000; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%;"
-      >
-        <path
-          id="overlayPath"
-          d="M${widthViewport},0L0,0L0,${heigthViewport}L${widthViewport},${heigthViewport}L${widthViewport},0Z M${xTarget},${yTarget} h${widthTarget} a5,5 0 0 1 5,5 v${heightTarget} a5,5 0 0 1 -5,5 h-${widthTarget} a5,5 0 0 1 -5,-5 v-${heightTarget} a5,5 0 0 1 5,-5 z"
-          style="fill: rgb(0, 0, 0); opacity: ${background_opacity / 100}; pointer-events: auto; cursor: auto;"
-        >
-        </path>
-      </svg>
-  `;
-  return;
-}
