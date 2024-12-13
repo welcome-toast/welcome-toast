@@ -55,7 +55,107 @@ let targetElement = null;
 let message = "";
 let overlay = null;
 
-function applyActionPreview() {
+function applyAction() {
+  const { target_element_id, message_title, message_body, background_opacity } = action[0];
+  targetElement = document.querySelector(`#${target_element_id}`);
+
+  if (!target_element_id || !targetElement) {
+    return;
+  }
+
+  const { width: widthViewport, height: heightViewport } = window.visualViewport;
+  const {
+    width: widthTarget,
+    height: heightTarget,
+    x: xTarget,
+    y: yTarget,
+  } = targetElement.getBoundingClientRect();
+  const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
+
+  overlay = window.document.createElement("div");
+  overlay.id = "welcomeToastOverlay";
+  document.body.appendChild(overlay);
+  setOverlay(
+    widthViewport,
+    heightViewport,
+    widthTarget,
+    heightTarget,
+    xTarget,
+    yTargetInLayout,
+    background_opacity,
+  );
+
+  const popover = window.document.createElement("div");
+  popover.id = "welcomeToastPopover";
+  overlay.insertAdjacentElement("afterend", popover);
+  setPopover();
+
+  function handleOverlayWindowResize() {
+    const { width: widthViewport, height: heightViewport } = window.visualViewport;
+    const {
+      width: widthTarget,
+      height: heightTarget,
+      x: xTarget,
+      y: yTarget,
+    } = targetElement.getBoundingClientRect();
+    const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
+
+    return setOverlay(
+      widthViewport,
+      heightViewport,
+      widthTarget,
+      heightTarget,
+      xTarget,
+      yTargetInLayout,
+      background_opacity,
+    );
+  }
+
+  function setPopover() {
+    const xTargetInLayout = xTarget + widthTarget + WHITE_SPACE;
+    const popoverHeader = window.document.createElement("div");
+    const popoverDescription = window.document.createElement("div");
+    const popoverFooter = window.document.createElement("div");
+
+    popoverHeader.id = "welcomeToastPopoverHeader";
+    popoverDescription.id = "welcomeToastPopoverDescription";
+    popoverFooter.id = "welcomeToastPopoverFooter";
+
+    popoverHeader.innerHTML = `<span>${message_title}</span>`;
+    popoverDescription.innerHTML = `<span>${message_body}</span>`;
+    popoverFooter.innerHTML = `<span>${message_body}</span>`;
+
+    popover.appendChild(popoverHeader);
+    popover.appendChild(popoverDescription);
+    popover.appendChild(popoverFooter);
+
+    popover.style = `position: absolute; top: ${yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; gap: 100px; padding: 15px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000`;
+    return;
+  }
+
+  function handlePopoverWindowResize() {
+    const { width: widthTarget, x: xTarget, y: yTarget } = targetElement.getBoundingClientRect();
+    const xTargetInLayout = xTarget + widthTarget + WHITE_SPACE;
+    popover.style.top = `${yTarget}px`;
+    popover.style.left = `${xTargetInLayout}px`;
+    return;
+  }
+
+  function handleRemovePopover(event) {
+    if (event.target.tagName === "path") {
+      overlay.remove();
+      popover.remove();
+      return;
+    }
+    return;
+  }
+
+  window.addEventListener("resize", handleOverlayWindowResize);
+  window.addEventListener("resize", handlePopoverWindowResize);
+  window.addEventListener("click", (event) => handleRemovePopover(event));
+}
+
+function applyActionAdminPreview() {
   const { target_element_id, message_title, message_body, background_opacity } = message;
   targetElement = document.querySelector(`#${target_element_id}`);
   const { width: widthViewport, height: heightViewport } = window.visualViewport;
@@ -155,7 +255,7 @@ function applyActionPreview() {
   window.addEventListener("click", (event) => handleRemovePopover(event));
 }
 
-function applyActionPreviewNext() {
+function applyActionAdminPreviewNext() {
   const popoverHeader = document.getElementById("welcomeToastPopoverHeader");
   const popoverDescription = document.getElementById("welcomeToastPopoverDescription");
   const popoverFooter = document.getElementById("welcomeToastPopoverFooter");
@@ -213,12 +313,14 @@ function setOverlay(
   return;
 }
 
+window.addEventListener("load", applyAction);
+
 window.addEventListener("message", (e) => {
   message = e.data;
   if (!overlay) {
-    applyActionPreview();
+    applyActionAdminPreview();
   } else {
-    applyActionPreviewNext();
+    applyActionAdminPreviewNext();
   }
 });
 
