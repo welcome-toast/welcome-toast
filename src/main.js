@@ -5,7 +5,7 @@ let targetElement = null;
 let message = "";
 let overlay = null;
 
-function applyAction() {
+function applyActionPreview() {
   const { target_element_id, message_title, message_body, background_opacity } = message;
   targetElement = document.querySelector(`#${target_element_id}`);
   const { width: widthViewport, height: heightViewport } = window.visualViewport;
@@ -105,6 +105,35 @@ function applyAction() {
   window.addEventListener("click", (event) => handleRemovePopover(event));
 }
 
+function applyActionPreviewNext() {
+  const popoverHeader = document.getElementById("welcomeToastPopoverHeader");
+  const popoverDescription = document.getElementById("welcomeToastPopoverDescription");
+  const popoverFooter = document.getElementById("welcomeToastPopoverFooter");
+
+  const { message_title, message_body, background_opacity } = message;
+  const {
+    width: widthTarget,
+    height: heightTarget,
+    x: xTarget,
+    y: yTarget,
+  } = targetElement.getBoundingClientRect();
+  const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
+
+  setOverlay(
+    widthViewport,
+    heightViewport,
+    widthTarget,
+    heightTarget,
+    xTarget,
+    yTargetInLayout,
+    background_opacity,
+  );
+
+  popoverHeader.innerHTML = `<span>${message_title}</span>`;
+  popoverDescription.innerHTML = `<span>${message_body}</span>`;
+  popoverFooter.innerHTML = `<span>${message_body}</span>`;
+}
+
 function setOverlay(
   widthViewport,
   heigthViewport,
@@ -137,34 +166,9 @@ function setOverlay(
 window.addEventListener("message", (e) => {
   message = e.data;
   if (!overlay) {
-    applyAction();
+    applyActionPreview();
   } else {
-    const popoverHeader = document.getElementById("welcomeToastPopoverHeader");
-    const popoverDescription = document.getElementById("welcomeToastPopoverDescription");
-    const popoverFooter = document.getElementById("welcomeToastPopoverFooter");
-
-    const { message_title, message_body, background_opacity } = message;
-    const {
-      width: widthTarget,
-      height: heightTarget,
-      x: xTarget,
-      y: yTarget,
-    } = targetElement.getBoundingClientRect();
-    const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
-
-    setOverlay(
-      widthViewport,
-      heightViewport,
-      widthTarget,
-      heightTarget,
-      xTarget,
-      yTargetInLayout,
-      background_opacity,
-    );
-
-    popoverHeader.innerHTML = `<span>${message_title}</span>`;
-    popoverDescription.innerHTML = `<span>${message_body}</span>`;
-    popoverFooter.innerHTML = `<span>${message_body}</span>`;
+    applyActionPreviewNext();
   }
 });
 
