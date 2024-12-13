@@ -6,27 +6,26 @@ s.defer = true;
 s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 document.head.appendChild(s);
 
+const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
+const SUPABASE_API_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
+
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
+
 const WHITE_SPACE = 5;
 let targetElement = null;
 let overlay = null;
-let projectId = "";
-let actionInfo = [];
 let message = "";
 
 async function getProject() {
   try {
-    const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
-    const SUPABASE_API_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
-
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
     const origin = window.location.origin;
 
     if (origin) {
       const { data: project, error } = await client.from("project").select("*").eq("link", origin);
-      projectId = project[0].id;
+      const projectId = project[0].id;
 
-      if (action === undefined) {
+      if (project === undefined) {
         throw new Error(error);
       }
 
@@ -50,9 +49,9 @@ async function getAction(projectId) {
         throw new Error(error);
       }
 
-      actionInfo = action;
+      const actionInfo = action;
 
-      applyAction();
+      applyAction(actionInfo);
     }
   } catch (e) {
     console.error(e);
@@ -60,8 +59,8 @@ async function getAction(projectId) {
   return;
 }
 
-function applyAction() {
-  const { target_element_id, message_title, message_body, background_opacity } = action[0];
+function applyAction(actionInfo) {
+  const { target_element_id, message_title, message_body, background_opacity } = actionInfo[0];
   targetElement = document.querySelector(`#${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
