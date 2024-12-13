@@ -9,7 +9,6 @@ document.head.appendChild(s);
 const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
 const SUPABASE_API_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
-
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 
 const WHITE_SPACE = 5;
@@ -320,7 +319,12 @@ function setOverlay(
 window.addEventListener("load", getProject);
 
 window.addEventListener("message", (e) => {
+  if (e.data.source) {
+    return;
+  }
+
   message = e.data;
+
   if (!overlay) {
     applyActionAdminPreview();
   } else {
