@@ -1,15 +1,25 @@
 console.log("@welcome-toast");
 
-const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
-const SUPABASE_API_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
+const s = document.createElement("script");
+s.type = "text/javascript";
+s.defer = true;
+s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+document.head.appendChild(s);
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
+const WHITE_SPACE = 5;
+let targetElement = null;
+let overlay = null;
 let projectId = "";
 let actionInfo = [];
+let message = "";
 
 async function getProject() {
   try {
+    const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
+    const SUPABASE_API_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
     const origin = window.location.origin;
 
     if (origin) {
@@ -41,19 +51,14 @@ async function getAction(projectId) {
       }
 
       actionInfo = action;
+
+      applyAction();
     }
   } catch (e) {
     console.error(e);
   }
   return;
 }
-
-getProject();
-
-const WHITE_SPACE = 5;
-let targetElement = null;
-let message = "";
-let overlay = null;
 
 function applyAction() {
   const { target_element_id, message_title, message_body, background_opacity } = action[0];
@@ -313,7 +318,7 @@ function setOverlay(
   return;
 }
 
-window.addEventListener("load", applyAction);
+window.addEventListener("load", getProject);
 
 window.addEventListener("message", (e) => {
   message = e.data;
