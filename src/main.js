@@ -9,23 +9,42 @@ let projectId = "";
 let actionInfo = [];
 
 async function getProject() {
-  const origin = window.location.origin;
+  try {
+    const origin = window.location.origin;
 
-  if (origin) {
-    const { data: project, error } = await client.from("project").select("*").eq("link", origin);
-    projectId = project[0].id;
+    if (origin) {
+      const { data: project, error } = await client.from("project").select("*").eq("link", origin);
+      projectId = project[0].id;
 
-    getAction(projectId);
+      if (action === undefined) {
+        throw new Error(error);
+      }
+
+      getAction(projectId);
+    }
+  } catch (e) {
+    console.error(e);
   }
   return;
 }
 
 async function getAction(projectId) {
-  const { data: action, error } = await client
-    .from("action")
-    .select("*")
-    .eq("project_id", projectId);
-  actionInfo = action;
+  try {
+    if (projectId) {
+      const { data: action, error } = await client
+        .from("action")
+        .select("*")
+        .eq("project_id", projectId);
+
+      if (action === undefined) {
+        throw new Error(error);
+      }
+
+      actionInfo = action;
+    }
+  } catch (e) {
+    console.error(e);
+  }
   return;
 }
 
