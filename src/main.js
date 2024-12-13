@@ -6,6 +6,7 @@ const SUPABASE_API_KEY =
 
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 let projectId = "";
+let actionInfo = [];
 
 async function getProject() {
   const origin = window.location.origin;
@@ -13,7 +14,18 @@ async function getProject() {
   if (origin) {
     const { data: project, error } = await client.from("project").select("*").eq("link", origin);
     projectId = project[0].id;
+
+    getAction(projectId);
   }
+  return;
+}
+
+async function getAction(projectId) {
+  const { data: action, error } = await client
+    .from("action")
+    .select("*")
+    .eq("project_id", projectId);
+  actionInfo = action;
   return;
 }
 
