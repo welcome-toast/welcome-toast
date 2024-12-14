@@ -18,11 +18,11 @@ let message = "";
 
 async function getProject() {
   try {
-    const origin = window.location.origin;
+    const href = window.location.href;
     client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 
-    if (origin) {
-      const { data: project, error } = await client.from("project").select("*").eq("link", origin);
+    if (href && href !== "") {
+      const { data: project, error } = await client.from("project").select("*").eq("link", href);
       const projectId = project[0].id;
 
       if (project === undefined) {
