@@ -9,12 +9,11 @@ document.head.appendChild(s);
 const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
 const SUPABASE_API_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
-let client;
-
 const WHITE_SPACE = 5;
 let targetElement = null;
 let overlay = null;
 let message = "";
+let client;
 
 async function getProject() {
   try {
@@ -22,16 +21,21 @@ async function getProject() {
     client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 
     if (href && href !== "") {
-      const { data: project, error } = await client.from("project").select("*").eq("link", href);
-      const projectId = project[0].id;
+      const { data: project, error } = await client
+        .from("project")
+        .select("*")
+        .eq("link", "https://jin-ttao.github.io/tictactoe/");
 
-      if (project === undefined) {
+      if (project.length === 0) {
         throw new Error(error);
       }
 
-      getAction(projectId);
+      getAction(project[0].id);
     }
   } catch (e) {
+    console.log(
+      "등록되지 않은 URL입니다. @welcome-toast 관리자 페이지에서 프로젝트 설정을 확인해주세요.",
+    );
     console.error(e);
   }
   return;
@@ -45,22 +49,23 @@ async function getAction(projectId) {
         .select("*")
         .eq("project_id", projectId);
 
-      if (action === undefined) {
+      if (action.length === 0) {
         throw new Error(error);
       }
 
-      const actionInfo = action;
-
-      applyAction(actionInfo);
+      applyAction(action);
     }
   } catch (e) {
+    console.log(
+      "등록되지 않은 프로젝트입니다. @welcome-toast 관리자 페이지에서 프로젝트 설정을 확인해주세요.",
+    );
     console.error(e);
   }
   return;
 }
 
-function applyAction(actionInfo) {
-  const { target_element_id, message_title, message_body, background_opacity } = actionInfo[0];
+function applyAction(action) {
+  const { target_element_id, message_title, message_body, background_opacity } = action[0];
   targetElement = document.querySelector(`#${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
@@ -290,7 +295,7 @@ function applyActionAdminPreviewNext() {
 
 function setOverlay(
   widthViewport,
-  heigthViewport,
+  heightViewport,
   widthTarget,
   heightTarget,
   xTarget,
@@ -299,7 +304,7 @@ function setOverlay(
 ) {
   overlay.innerHTML = `
       <svg
-        viewBox="0 0 ${widthViewport} ${heigthViewport}"
+        viewBox="0 0 ${widthViewport} ${heightViewport}"
         xmlSpace="preserve"
         xmlnsXlink="http://www.w3.org/1999/xlink"
         version="1.1"
@@ -308,7 +313,7 @@ function setOverlay(
       >
         <path
           id="overlayPath"
-          d="M${widthViewport},0L0,0L0,${heigthViewport}L${widthViewport},${heigthViewport}L${widthViewport},0Z M${xTarget},${yTarget} h${widthTarget} a5,5 0 0 1 5,5 v${heightTarget} a5,5 0 0 1 -5,5 h-${widthTarget} a5,5 0 0 1 -5,-5 v-${heightTarget} a5,5 0 0 1 5,-5 z"
+          d="M${widthViewport},0L0,0L0,${heightViewport}L${widthViewport},${heightViewport}L${widthViewport},0Z M${xTarget},${yTarget} h${widthTarget} a5,5 0 0 1 5,5 v${heightTarget} a5,5 0 0 1 -5,5 h-${widthTarget} a5,5 0 0 1 -5,-5 v-${heightTarget} a5,5 0 0 1 5,-5 z"
           style="fill: rgb(0, 0, 0); opacity: ${background_opacity / 100}; pointer-events: auto; cursor: auto;"
         >
         </path>
