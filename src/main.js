@@ -255,6 +255,12 @@ function handleRemovePopover(event) {
   return;
 }
 
+function handleMessageParent(event) {
+  const target = JSON.parse(JSON.stringify(e.target.id));
+  window.parent.postMessage({ target }, "*");
+  return;
+}
+
 window.addEventListener("load", getProject);
 window.addEventListener("message", (e) => {
   if (e.data.source) {
@@ -265,7 +271,6 @@ window.addEventListener("message", (e) => {
 
   applyActionAdminPreview();
 });
-window.addEventListener("click", (e) => {
-  const target = JSON.parse(JSON.stringify(e.target.id));
-  window.parent.postMessage({ target }, "*");
-});
+if (window.parent !== window) {
+  window.addEventListener("click", handleMessageParent);
+}
