@@ -221,11 +221,13 @@ function setPopover(targetElement, message_title, message_body) {
   const { target: t } = getWindowAndTargetSizePosition(targetElement);
   const xTargetInLayout = t.xTarget + t.widthTarget + WHITE_SPACE;
 
-  popoverHeader.innerHTML = `<span>${message_title}</span>`;
+  popoverHeader.innerHTML = `<span style="font-weight: bold;">${message_title}</span>`;
   popoverDescription.innerHTML = `<span>${message_body}</span>`;
   popoverFooter.innerHTML = `<span>${message_body}</span>`;
 
-  popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; gap: 100px; padding: 15px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000`;
+  popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; max-height: 250px; max-width: 250px; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
+  popoverHeader.style = "margin-bottom: 5px;";
+  popoverDescription.style = "margin-bottom: 5px;";
   return;
 }
 
