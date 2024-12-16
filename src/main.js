@@ -12,7 +12,7 @@ const SUPABASE_API_KEY =
 const WHITE_SPACE = 5;
 let overlay = null;
 let targetElement = null;
-let action = [];
+let actionList = [];
 let messageFromPreview = "";
 let client;
 
@@ -22,13 +22,16 @@ async function getProject() {
     client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 
     if (href && href !== "") {
-      const { data: project, error } = await client.from("project").select("*").eq("link", href);
+      const { data: resultProject, error } = await client
+        .from("project")
+        .select("*")
+        .eq("link", href);
 
-      if (project.length === 0) {
+      if (resultProject.length === 0) {
         throw new Error(error);
       }
 
-      getAction(project[0].id);
+      getAction(resultProject[0].id);
     }
   } catch (e) {
     console.log(
@@ -42,16 +45,16 @@ async function getProject() {
 async function getAction(projectId) {
   try {
     if (projectId) {
-      const { data: actionInfo, error } = await client
+      const { data: resultAction, error } = await client
         .from("action")
         .select("*")
         .eq("project_id", projectId);
 
-      if (actionInfo.length === 0) {
+      if (resultAction.length === 0) {
         throw new Error(error);
       }
 
-      action = [...actionInfo];
+      actionList = [...resultAction];
       applyAction();
     }
   } catch (e) {
@@ -64,7 +67,7 @@ async function getAction(projectId) {
 }
 
 function applyAction() {
-  const { target_element_id, message_title, message_body, background_opacity } = action[0];
+  const { target_element_id, message_title, message_body, background_opacity } = actionList[0];
   targetElement = document.querySelector(`#${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
@@ -221,7 +224,7 @@ function setPopover(targetElement, message_title, message_body) {
 }
 
 function handleOverlayWindowResize() {
-  const { target_element_id, background_opacity } = action[0];
+  const { target_element_id, background_opacity } = actionList[0];
   const targetElement = document.querySelector(`#${target_element_id}`);
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const yTargetInLayout = Math.ceil(t.yTarget) - WHITE_SPACE;
@@ -239,7 +242,7 @@ function handleOverlayWindowResize() {
 }
 
 function handlePopoverWindowResize() {
-  const { target_element_id } = action[0];
+  const { target_element_id } = actionList[0];
   const targetElement = document.querySelector(`#${target_element_id}`);
   const { target: t } = getWindowAndTargetSizePosition(targetElement);
   const xTargetInLayout = t.xTarget + t.widthTarget + WHITE_SPACE;
