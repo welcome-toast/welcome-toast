@@ -99,130 +99,34 @@ function applyAction(action) {
 function applyActionAdminPreview() {
   const { target_element_id, message_title, message_body, background_opacity } = messageFromPreview;
   targetElement = document.querySelector(`#${target_element_id}`);
-  const { width: widthViewport, height: heightViewport } = window.visualViewport;
 
-  if (!targetElement) {
+  if (!target_element_id || !targetElement) {
+    console.log(
+      !target_element_id ? "타겟 id가 없습니다." : "타겟 id을 가진 요소가 존재하지 않습니다.",
+    );
     return;
   }
 
-  const {
-    width: widthTarget,
-    height: heightTarget,
-    x: xTarget,
-    y: yTarget,
-  } = targetElement.getBoundingClientRect();
-  const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
+  const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
+  const yTargetInLayout = Math.ceil(t.yTarget) - WHITE_SPACE;
 
-  overlay = window.document.createElement("div");
-  overlay.id = "welcomeToastOverlay";
-  document.body.appendChild(overlay);
+  createOverlay();
   setOverlay(
-    widthViewport,
-    heightViewport,
-    widthTarget,
-    heightTarget,
-    xTarget,
+    w.widthViewport,
+    w.heightViewport,
+    t.widthTarget,
+    t.heightTarget,
+    t.xTarget,
     yTargetInLayout,
     background_opacity,
   );
 
-  const popover = window.document.createElement("div");
-  popover.id = "welcomeToastPopover";
-  overlay.insertAdjacentElement("afterend", popover);
-  setPopover();
-
-  function handleOverlayWindowResize() {
-    const { width: widthViewport, height: heightViewport } = window.visualViewport;
-    const {
-      width: widthTarget,
-      height: heightTarget,
-      x: xTarget,
-      y: yTarget,
-    } = targetElement.getBoundingClientRect();
-    const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
-
-    return setOverlay(
-      widthViewport,
-      heightViewport,
-      widthTarget,
-      heightTarget,
-      xTarget,
-      yTargetInLayout,
-      background_opacity,
-    );
-  }
-
-  function setPopover() {
-    const xTargetInLayout = xTarget + widthTarget + WHITE_SPACE;
-    const popoverHeader = window.document.createElement("div");
-    const popoverDescription = window.document.createElement("div");
-    const popoverFooter = window.document.createElement("div");
-
-    popoverHeader.id = "welcomeToastPopoverHeader";
-    popoverDescription.id = "welcomeToastPopoverDescription";
-    popoverFooter.id = "welcomeToastPopoverFooter";
-
-    popoverHeader.innerHTML = `<span>${message_title}</span>`;
-    popoverDescription.innerHTML = `<span>${message_body}</span>`;
-    popoverFooter.innerHTML = `<span>${message_body}</span>`;
-
-    popover.appendChild(popoverHeader);
-    popover.appendChild(popoverDescription);
-    popover.appendChild(popoverFooter);
-
-    popover.style = `position: absolute; top: ${yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; gap: 100px; padding: 15px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000`;
-    return;
-  }
-
-  function handlePopoverWindowResize() {
-    const { width: widthTarget, x: xTarget, y: yTarget } = targetElement.getBoundingClientRect();
-    const xTargetInLayout = xTarget + widthTarget + WHITE_SPACE;
-    popover.style.top = `${yTarget}px`;
-    popover.style.left = `${xTargetInLayout}px`;
-    return;
-  }
-
-  function handleRemovePopover(event) {
-    if (event.target.tagName === "path") {
-      overlay.remove();
-      popover.remove();
-      return;
-    }
-    return;
-  }
+  createPopover();
+  setPopover(targetElement, message_title, message_body);
 
   window.addEventListener("resize", handleOverlayWindowResize);
   window.addEventListener("resize", handlePopoverWindowResize);
   window.addEventListener("click", (event) => handleRemovePopover(event));
-}
-
-function applyActionAdminPreviewNext() {
-  const popoverHeader = document.getElementById("welcomeToastPopoverHeader");
-  const popoverDescription = document.getElementById("welcomeToastPopoverDescription");
-  const popoverFooter = document.getElementById("welcomeToastPopoverFooter");
-
-  const { message_title, message_body, background_opacity } = messageFromPreview;
-  const {
-    width: widthTarget,
-    height: heightTarget,
-    x: xTarget,
-    y: yTarget,
-  } = targetElement.getBoundingClientRect();
-  const yTargetInLayout = Math.ceil(yTarget) - WHITE_SPACE;
-
-  setOverlay(
-    widthViewport,
-    heightViewport,
-    widthTarget,
-    heightTarget,
-    xTarget,
-    yTargetInLayout,
-    background_opacity,
-  );
-
-  popoverHeader.innerHTML = `<span>${message_title}</span>`;
-  popoverDescription.innerHTML = `<span>${message_body}</span>`;
-  popoverFooter.innerHTML = `<span>${message_body}</span>`;
 }
 
 function getWindowAndTargetSizePosition(targetElement) {
@@ -343,10 +247,10 @@ function handlePopoverWindowResize() {
 function handleRemovePopover(event) {
   const overlay = document.querySelector("#welcomeToastOverlay");
   const popover = document.querySelector("#welcomeToastPopover");
+
   if (event.target.tagName === "path") {
     overlay.remove();
     popover.remove();
-    return;
   }
   return;
 }
@@ -359,11 +263,7 @@ window.addEventListener("message", (e) => {
 
   messageFromPreview = e.data;
 
-  if (!overlay) {
-    applyActionAdminPreview();
-  } else {
-    applyActionAdminPreviewNext();
-  }
+  applyActionAdminPreview();
 });
 window.addEventListener("click", (e) => {
   const target = JSON.parse(JSON.stringify(e.target.id));
