@@ -194,31 +194,36 @@ function setOverlay(
 
 function createPopover() {
   const overlay = document.querySelector("#welcomeToastOverlay");
+
   const popover = window.document.createElement("div");
+  const popoverHeader = window.document.createElement("div");
+  const popoverDescription = window.document.createElement("div");
+  const popoverFooter = window.document.createElement("div");
+
   popover.id = "welcomeToastPopover";
+  popoverHeader.id = "welcomeToastPopoverHeader";
+  popoverDescription.id = "welcomeToastPopoverDescription";
+  popoverFooter.id = "welcomeToastPopoverFooter";
+
   overlay.insertAdjacentElement("afterend", popover);
+  popover.appendChild(popoverHeader);
+  popover.appendChild(popoverDescription);
+  popover.appendChild(popoverFooter);
   return;
 }
 
 function setPopover(targetElement, message_title, message_body) {
   const popover = document.querySelector("#welcomeToastPopover");
+  const popoverHeader = document.querySelector("#welcomeToastPopoverHeader");
+  const popoverDescription = document.querySelector("#welcomeToastPopoverDescription");
+  const popoverFooter = document.querySelector("#welcomeToastPopoverFooter");
+
   const { target: t } = getWindowAndTargetSizePosition(targetElement);
   const xTargetInLayout = t.xTarget + t.widthTarget + WHITE_SPACE;
 
-  const popoverHeader = window.document.createElement("div");
-  popoverHeader.id = "welcomeToastPopoverHeader";
   popoverHeader.innerHTML = `<span>${message_title}</span>`;
-  popover.appendChild(popoverHeader);
-
-  const popoverDescription = window.document.createElement("div");
-  popoverDescription.id = "welcomeToastPopoverDescription";
   popoverDescription.innerHTML = `<span>${message_body}</span>`;
-  popover.appendChild(popoverDescription);
-
-  const popoverFooter = window.document.createElement("div");
-  popoverFooter.id = "welcomeToastPopoverFooter";
   popoverFooter.innerHTML = `<span>${message_body}</span>`;
-  popover.appendChild(popoverFooter);
 
   popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; gap: 100px; padding: 15px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000`;
   return;
