@@ -109,8 +109,13 @@ function applyActionAdminPreview() {
 
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const yTargetInLayout = Math.ceil(t.yTarget) - WHITE_SPACE;
+  const overlay = document.querySelector("#welcomeToastOverlay");
+  const popover = document.querySelector("#welcomeToastPopover");
 
-  createOverlay();
+  if (!overlay) {
+    createOverlay();
+  }
+
   setOverlay(
     w.widthViewport,
     w.heightViewport,
@@ -121,7 +126,10 @@ function applyActionAdminPreview() {
     background_opacity,
   );
 
-  createPopover();
+  if (!popover) {
+    createPopover();
+  }
+
   setPopover(targetElement, message_title, message_body);
 
   window.addEventListener("resize", handleOverlayWindowResize);
