@@ -95,8 +95,10 @@ function applyAction() {
   createPopover();
   setPopover(targetElement, message_title, message_body);
 
-  window.addEventListener("resize", handleOverlayWindowResize);
-  window.addEventListener("resize", handlePopoverWindowResize);
+  window.addEventListener("resize", handleOverlayWindowResizeScroll);
+  window.addEventListener("resize", handlePopoverWindowResizeScroll);
+  window.addEventListener("scroll", handleOverlayWindowResizeScroll);
+  window.addEventListener("scroll", handlePopoverWindowResizeScroll);
   window.addEventListener("click", (event) => handleRemovePopover(event));
 }
 
@@ -226,7 +228,7 @@ function setPopover(targetElement, message_title, message_body) {
   popoverFooter.innerHTML = `<span>${message_body}</span>`;
 
   if (t.xTarget > w.widthViewport * 0.7) {
-    popover.style = `position: absolute; top: ${t.yTarget + t.heightTarget + WHITE_SPACE}px; right: ${w.widthViewport - t.xTarget - t.widthTarget - WHITE_SPACE}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 200px; max-width: 250px; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
+    popover.style = `position: absolute; top: ${t.yTarget + t.heightTarget + WHITE_SPACE + window.scrollY}px; right: ${w.widthViewport - t.xTarget - t.widthTarget - WHITE_SPACE}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 200px; max-width: 250px; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
     popoverHeader.style = "margin-bottom: 5px;";
     popoverDescription.style = "margin-bottom: 5px;";
     return;
@@ -238,7 +240,7 @@ function setPopover(targetElement, message_title, message_body) {
   return;
 }
 
-function handleOverlayWindowResize() {
+function handleOverlayWindowResizeScroll() {
   const { target_element_id, background_opacity } = actionList[0];
   const targetElement = document.querySelector(`#${target_element_id}`);
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
@@ -256,7 +258,7 @@ function handleOverlayWindowResize() {
   return;
 }
 
-function handlePopoverWindowResize() {
+function handlePopoverWindowResizeScroll() {
   const { target_element_id } = actionList[0];
   const targetElement = document.querySelector(`#${target_element_id}`);
   const popover = document.querySelector("#welcomeToastPopover");
@@ -268,7 +270,9 @@ function handlePopoverWindowResize() {
   }
 
   if (t.xTarget > w.widthViewport * 0.7) {
-    popover.style.top = `${t.yTarget + t.heightTarget + WHITE_SPACE}px`;
+    if (!window.scrollY) {
+      popover.style.top = `${t.yTarget + t.heightTarget + WHITE_SPACE}px`;
+    }
     popover.style.right = `${w.widthViewport - t.xTarget - t.widthTarget - WHITE_SPACE}px`;
     return;
   }
