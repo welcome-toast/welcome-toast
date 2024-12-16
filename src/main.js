@@ -6,6 +6,7 @@ s.defer = true;
 s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 document.head.appendChild(s);
 
+const TARGET_ORIGIN = "http://localhost:5173";
 const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
 const SUPABASE_API_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
@@ -267,9 +268,8 @@ function handleRemovePopover(event) {
 }
 
 function handleMessageParent(event) {
-  console.log("handleMessageParent", event.target.id);
   const target = JSON.parse(JSON.stringify(event.target.id));
-  window.parent.postMessage({ target }, "*");
+  window.parent.postMessage({ target }, TARGET_ORIGIN);
   return;
 }
 
@@ -283,8 +283,4 @@ window.addEventListener("message", (event) => {
 
   applyActionAdminPreview();
 });
-console.log("window.parent", window.parent);
-if (window.parent !== window) {
-  console.log("window.parent", window.parent !== window);
-  window.addEventListener("click", handleMessageParent);
-}
+window.addEventListener("click", handleMessageParent);
