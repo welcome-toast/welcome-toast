@@ -134,7 +134,7 @@ function applyActionAdminPreview() {
 
   window.addEventListener("resize", handleOverlayWindowResize);
   window.addEventListener("resize", handlePopoverWindowResize);
-  window.addEventListener("click", (event) => handleRemovePopover(event));
+  window.addEventListener("click", handleRemovePopover);
 }
 
 function getWindowAndTargetSizePosition(targetElement) {
@@ -264,18 +264,18 @@ function handleRemovePopover(event) {
 }
 
 function handleMessageParent(event) {
-  const target = JSON.parse(JSON.stringify(e.target.id));
+  const target = JSON.parse(JSON.stringify(event.target.id));
   window.parent.postMessage({ target }, "*");
   return;
 }
 
 window.addEventListener("load", getProject);
-window.addEventListener("message", (e) => {
-  if (e.data.source) {
+window.addEventListener("message", (event) => {
+  if (event.data.source) {
     return;
   }
 
-  messageFromPreview = e.data;
+  messageFromPreview = event.data;
 
   applyActionAdminPreview();
 });
