@@ -52,7 +52,7 @@ async function getAction(projectId) {
       }
 
       action = [...actionInfo];
-      applyAction(action[0]);
+      applyAction();
     }
   } catch (e) {
     console.log(
@@ -63,8 +63,8 @@ async function getAction(projectId) {
   return;
 }
 
-function applyAction(action) {
-  const { target_element_id, message_title, message_body, background_opacity } = action;
+function applyAction() {
+  const { target_element_id, message_title, message_body, background_opacity } = action[0];
   targetElement = document.querySelector(`#${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
