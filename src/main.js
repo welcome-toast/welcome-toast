@@ -267,6 +267,7 @@ function handleRemovePopover(event) {
 }
 
 function handleMessageParent(event) {
+  console.log("handleMessageParent", event.target.id);
   const target = JSON.parse(JSON.stringify(event.target.id));
   window.parent.postMessage({ target }, "*");
   return;
@@ -282,6 +283,8 @@ window.addEventListener("message", (event) => {
 
   applyActionAdminPreview();
 });
+console.log("window.parent", window.parent);
 if (window.parent !== window) {
+  console.log("window.parent", window.parent !== window);
   window.addEventListener("click", handleMessageParent);
 }
