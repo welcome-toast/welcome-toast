@@ -306,12 +306,10 @@ function handleMessageParent(event) {
 
 window.addEventListener("load", getProject);
 window.addEventListener("message", (event) => {
-  if (event.data.source) {
-    return;
+  if (event.data.origin === "https://welcome-toast.com") {
+    messageFromPreview = event.data;
+    applyActionAdminPreview();
   }
-
-  messageFromPreview = event.data;
-
-  applyActionAdminPreview();
+  return;
 });
 window.addEventListener("click", handleMessageParent);
