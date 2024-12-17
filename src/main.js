@@ -152,11 +152,13 @@ function getWindowAndTargetSizePosition(targetElement) {
     height: heightTarget,
     x: xTarget,
     y: yTarget,
+    right,
+    bottom,
   } = targetElement.getBoundingClientRect();
 
   return {
     window: { widthViewport, heightViewport },
-    target: { widthTarget, heightTarget, xTarget, yTarget },
+    target: { widthTarget, heightTarget, xTarget, yTarget, right, bottom },
   };
 }
 
