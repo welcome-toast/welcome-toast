@@ -223,20 +223,21 @@ function setPopover(targetElement, message_title, message_body) {
   const popoverFooter = document.querySelector("#welcomeToastPopoverFooter");
 
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
+  const gapRight = w.widthViewport - (t.right + t.widthTarget);
   const xTargetInLayout = t.xTarget + t.widthTarget + WHITE_SPACE;
 
   popoverHeader.innerHTML = `<span style="font-weight: bold;">${message_title}</span>`;
   popoverDescription.innerHTML = `<span>${message_body}</span>`;
   popoverFooter.innerHTML = `<span>${message_body}</span>`;
 
-  if (t.xTarget > w.widthViewport * 0.7) {
+  if (gapRight < 300) {
     popover.style = `position: absolute; top: ${t.yTarget + t.heightTarget + WHITE_SPACE + window.scrollY}px; right: ${w.widthViewport - t.xTarget - t.widthTarget - WHITE_SPACE}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 200px; max-width: 250px; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
     popoverHeader.style = "margin-bottom: 5px;";
     popoverDescription.style = "margin-bottom: 5px;";
     return;
   }
 
-  popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; max-height: 250px; max-width: 250px; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
+  popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 200px; max-width: 250px; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
   popoverHeader.style = "margin-bottom: 5px;";
   popoverDescription.style = "margin-bottom: 5px;";
   return;
@@ -265,28 +266,22 @@ function handlePopoverWindowResizeScroll() {
   const targetElement = document.querySelector(`#${target_element_id}`);
   const popover = document.querySelector("#welcomeToastPopover");
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
-  const xTargetInLayout = t.xTarget + t.widthTarget + WHITE_SPACE;
+  const gapRight = w.widthViewport - (t.right + t.widthTarget);
 
   if (!popover) {
     return;
   }
 
-  if (t.xTarget > w.widthViewport * 0.7) {
+  if (gapRight < 400) {
     if (!window.scrollY) {
-      popover.style.top = `${t.yTarget + t.heightTarget + WHITE_SPACE}px`;
+      popover.style.top = `${t.bottom + WHITE_SPACE}px`;
     }
-    popover.style.right = `${w.widthViewport - t.xTarget - t.widthTarget - WHITE_SPACE}px`;
-    return;
-  }
-
-  if (w.widthViewport / 2 < 350) {
-    popover.style.top = `${t.yTarget + t.heightTarget + WHITE_SPACE}px`;
     popover.style.left = `${t.xTarget - WHITE_SPACE}px`;
     return;
   }
 
   popover.style.top = `${t.yTarget}px`;
-  popover.style.left = `${xTargetInLayout}px`;
+  popover.style.left = `${t.right + WHITE_SPACE}px`;
   return;
 }
 
