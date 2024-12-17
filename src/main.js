@@ -138,8 +138,10 @@ function applyActionAdminPreview() {
 
   setPopover(targetElement, message_title, message_body);
 
-  window.addEventListener("resize", handleOverlayWindowResize);
-  window.addEventListener("resize", handlePopoverWindowResize);
+  window.addEventListener("resize", handleOverlayWindowResizeScroll);
+  window.addEventListener("resize", handlePopoverWindowResizeScroll);
+  window.addEventListener("scroll", handleOverlayWindowResizeScroll);
+  window.addEventListener("scroll", handlePopoverWindowResizeScroll);
   window.addEventListener("click", handleRemovePopover);
 }
 
