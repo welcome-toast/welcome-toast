@@ -311,7 +311,7 @@ function handleMessageParent(event) {
 
 window.addEventListener("load", getProject);
 window.addEventListener("message", (event) => {
-  if (event.data.origin === "https://welcome-toast.com") {
+  if (event.origin === TARGET_ORIGIN) {
     messageFromPreview = event.data;
     applyActionAdminPreview();
   }
