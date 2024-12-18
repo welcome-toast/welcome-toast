@@ -99,7 +99,8 @@ function applyAction() {
   window.addEventListener("resize", handlePopoverWindowResizeScroll);
   window.addEventListener("scroll", handleOverlayWindowResizeScroll);
   window.addEventListener("scroll", handlePopoverWindowResizeScroll);
-  window.addEventListener("click", (event) => handleRemovePopover(event));
+  window.addEventListener("click", handleRemovePopover);
+  window.addEventListener("touchend", handleRemovePopover);
 }
 
 function applyActionAdminPreview() {
