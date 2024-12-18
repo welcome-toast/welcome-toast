@@ -68,7 +68,7 @@ async function getAction(projectId) {
 }
 
 function applyAction() {
-  const { target_element_id, image_url, message_title, message_body, background_opacity } =
+  const { target_element_id, message_title, message_body, image_url, background_opacity } =
     actionList[0];
   targetElement = document.querySelector(`#${target_element_id}`);
 
@@ -94,7 +94,7 @@ function applyAction() {
   );
 
   createPopover();
-  setPopover(targetElement, image_url, message_title, message_body);
+  setPopover(targetElement, message_title, message_body, image_url);
 
   window.addEventListener("resize", handleOverlayWindowResizeScroll);
   window.addEventListener("resize", handlePopoverWindowResizeScroll);
@@ -105,7 +105,8 @@ function applyAction() {
 }
 
 function applyActionAdminPreview() {
-  const { target_element_id, message_title, message_body, background_opacity } = messageFromPreview;
+  const { target_element_id, message_title, message_body, image_url, background_opacity } =
+    messageFromPreview;
   targetElement = document.querySelector(`#${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
@@ -138,7 +139,7 @@ function applyActionAdminPreview() {
     createPopover();
   }
 
-  setPopover(targetElement, message_title, message_body);
+  setPopover(targetElement, message_title, message_body, image_url);
 
   window.addEventListener("resize", handleOverlayWindowResizeScroll);
   window.addEventListener("resize", handlePopoverWindowResizeScroll);
@@ -220,7 +221,7 @@ function createPopover() {
   return;
 }
 
-function setPopover(targetElement, image_url, message_title, message_body) {
+function setPopover(targetElement, message_title, message_body, image_url) {
   const popover = document.querySelector("#welcomeToastPopover");
   const popoverHeader = document.querySelector("#welcomeToastPopoverHeader");
   const popoverDescription = document.querySelector("#welcomeToastPopoverDescription");
