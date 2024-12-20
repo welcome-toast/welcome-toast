@@ -239,7 +239,7 @@ function setPopover(targetElement, message_title, message_body, image_url) {
 
   popoverHeader.innerHTML = `<span style="font-weight: bold;">${message_title}</span>`;
   popoverDescription.innerHTML = `<span>${message_body}</span>`;
-  popoverFooter.innerHTML = `<div style="width: 60%"></div><button type="button">확인</button>`;
+  popoverFooter.innerHTML = `<div style="width: 60%"></div><button id="welcomeToastPopoverButton" type="button">확인</button>`;
 
   if (image_url) {
     popoverImage.innerHTML = `<img src=${image_url} alt="popoverFooter" width="100%" />`;
