@@ -205,16 +205,19 @@ function createPopover() {
   const overlay = document.querySelector("#welcomeToastOverlay");
 
   const popover = window.document.createElement("div");
+  const popoverImage = window.document.createElement("div");
   const popoverHeader = window.document.createElement("div");
   const popoverDescription = window.document.createElement("div");
   const popoverFooter = window.document.createElement("div");
 
   popover.id = "welcomeToastPopover";
+  popoverImage.id = "welcomeToastPopoverImage";
   popoverHeader.id = "welcomeToastPopoverHeader";
   popoverDescription.id = "welcomeToastPopoverDescription";
   popoverFooter.id = "welcomeToastPopoverFooter";
 
   overlay.insertAdjacentElement("afterend", popover);
+  popover.appendChild(popoverImage);
   popover.appendChild(popoverHeader);
   popover.appendChild(popoverDescription);
   popover.appendChild(popoverFooter);
