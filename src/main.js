@@ -14,6 +14,7 @@ const WHITE_SPACE = 5;
 let overlay = null;
 let targetElement = null;
 let toastList = [];
+let countToastClicked = 0;
 let messageFromPreview = "";
 let client;
 
@@ -46,6 +47,7 @@ async function getProject() {
 async function getToastList(projectId) {
   try {
     if (projectId) {
+      const INDEX_FIRST_TOAST = 0;
       const { data: resultToastList, error } = await client
         .from("toast")
         .select("*")
@@ -56,7 +58,7 @@ async function getToastList(projectId) {
       }
 
       toastList = [...resultToastList];
-      applyToast();
+      applyToast(INDEX_FIRST_TOAST);
     }
   } catch (e) {
     console.log(
@@ -67,9 +69,9 @@ async function getToastList(projectId) {
   return;
 }
 
-function applyToast() {
+function applyToast(indexToast) {
   const { target_element_id, message_title, message_body, image_url, background_opacity } =
-    toastList[0];
+    toastList[indexToast];
   targetElement = document.querySelector(`#${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
@@ -255,6 +257,22 @@ function setPopover(targetElement, message_title, message_body, image_url) {
   popoverHeader.style = "margin-bottom: 10px;";
   popoverDescription.style = "margin-bottom: 10px;";
   popoverFooter.style = "display: flex; align-items: center; justify-content: space-between;";
+  return;
+}
+
+function handleToastButtonClick() {
+  const overlay = document.querySelector("#welcomeToastOverlay");
+  const popover = document.querySelector("#welcomeToastPopover");
+
+  overlay.remove();
+  popover.remove();
+
+  if (countToastClicked === toastList.length - 1) {
+    return;
+  }
+
+  countToastClicked += 1;
+  applyToast(countToastClicked);
   return;
 }
 
