@@ -100,8 +100,8 @@ function applyToast() {
   window.addEventListener("resize", handlePopoverWindowResizeScroll);
   window.addEventListener("scroll", handleOverlayWindowResizeScroll);
   window.addEventListener("scroll", handlePopoverWindowResizeScroll);
-  window.addEventListener("click", handleRemovePopover);
-  window.addEventListener("touchend", handleRemovePopover);
+  window.addEventListener("click", handleRemoveToast);
+  window.addEventListener("touchend", handleRemoveToast);
 }
 
 function applyToastAdminPreview() {
@@ -145,7 +145,7 @@ function applyToastAdminPreview() {
   window.addEventListener("resize", handlePopoverWindowResizeScroll);
   window.addEventListener("scroll", handleOverlayWindowResizeScroll);
   window.addEventListener("scroll", handlePopoverWindowResizeScroll);
-  window.addEventListener("click", handleRemovePopover);
+  window.addEventListener("click", handleRemoveToast);
 }
 
 function getWindowAndTargetSizePosition(targetElement) {
@@ -300,7 +300,7 @@ function handlePopoverWindowResizeScroll() {
   return;
 }
 
-function handleRemovePopover(event) {
+function handleRemoveToast(event) {
   const overlay = document.querySelector("#welcomeToastOverlay");
   const popover = document.querySelector("#welcomeToastPopover");
 
