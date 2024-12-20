@@ -13,7 +13,7 @@ const SUPABASE_API_KEY =
 const WHITE_SPACE = 5;
 let overlay = null;
 let targetElement = null;
-let actionList = [];
+let toastList = [];
 let messageFromPreview = "";
 let client;
 
@@ -32,7 +32,7 @@ async function getProject() {
         throw new Error(error);
       }
 
-      getAction(resultProject[0].id);
+      getToastList(resultProject[0].id);
     }
   } catch (e) {
     console.log(
@@ -43,33 +43,33 @@ async function getProject() {
   return;
 }
 
-async function getAction(projectId) {
+async function getToastList(projectId) {
   try {
     if (projectId) {
-      const { data: resultAction, error } = await client
-        .from("action")
+      const { data: resultToastList, error } = await client
+        .from("toast")
         .select("*")
         .eq("project_id", projectId);
 
-      if (resultAction.length === 0) {
+      if (resultToastList.length === 0) {
         throw new Error(error);
       }
 
-      actionList = [...resultAction];
-      applyAction();
+      toastList = [...resultToastList];
+      applyToast();
     }
   } catch (e) {
     console.log(
-      "등록된 액션이 없습니다. @welcome-toast 관리자 페이지에서 액션 설정을 확인해주세요.",
+      "등록된 토스트가 없습니다. @welcome-toast 관리자 페이지에서 토스트 설정을 확인해주세요.",
     );
     console.error(e);
   }
   return;
 }
 
-function applyAction() {
+function applyToast() {
   const { target_element_id, message_title, message_body, image_url, background_opacity } =
-    actionList[0];
+    toastList[0];
   targetElement = document.querySelector(`#${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
@@ -104,7 +104,7 @@ function applyAction() {
   window.addEventListener("touchend", handleRemovePopover);
 }
 
-function applyActionAdminPreview() {
+function applyToastAdminPreview() {
   const { target_element_id, message_title, message_body, image_url, background_opacity } =
     messageFromPreview;
   targetElement = document.querySelector(`#${target_element_id}`);
@@ -252,7 +252,7 @@ function setPopover(targetElement, message_title, message_body, image_url) {
 }
 
 function handleOverlayWindowResizeScroll() {
-  const { target_element_id, background_opacity } = actionList[0];
+  const { target_element_id, background_opacity } = toastList[0];
   const targetElement = document.querySelector(`#${target_element_id}`);
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const yTargetInLayout = Math.ceil(t.yTarget) - WHITE_SPACE;
@@ -270,7 +270,7 @@ function handleOverlayWindowResizeScroll() {
 }
 
 function handlePopoverWindowResizeScroll() {
-  const { target_element_id } = actionList[0];
+  const { target_element_id } = toastList[0];
   const targetElement = document.querySelector(`#${target_element_id}`);
   const popover = document.querySelector("#welcomeToastPopover");
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
@@ -314,7 +314,7 @@ window.addEventListener("load", getProject);
 window.addEventListener("message", (event) => {
   if (event.origin === TARGET_ORIGIN) {
     messageFromPreview = event.data;
-    applyActionAdminPreview();
+    applyToastAdminPreview();
   }
   return;
 });
