@@ -245,6 +245,8 @@ function setPopover(targetElement, message_title, message_body, image_url) {
     popoverImage.innerHTML = `<img src=${image_url} alt="popoverFooter" width="100%" />`;
   }
 
+  welcomeToastPopoverButton.addEventListener("click", handleToastButtonClick);
+
   if (gapRight < 300) {
     popover.style = `position: absolute; top: ${t.yTarget + t.heightTarget + WHITE_SPACE + window.scrollY}px; right: ${w.widthViewport - t.xTarget - t.widthTarget - WHITE_SPACE}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 200px; max-width: 250px; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
     popoverHeader.style = "margin-bottom: 5px;";
