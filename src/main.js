@@ -11,12 +11,44 @@ const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
 const SUPABASE_API_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
 const WHITE_SPACE = 5;
+const FIRST_TOAST_INDEX = 0;
+let indexToast = FIRST_TOAST_INDEX;
+
+const totalToastList = [];
+let currentToastList = [];
+let prevFirstToast;
+let lastToast;
 let overlay = null;
 let targetElement = null;
-let toastList = [];
-let countToastClicked = 0;
 let messageFromPreview = "";
 let client;
+
+const observer = new MutationObserver(mutationCallback);
+function mutationCallback() {
+  const currentToastIdList = getCurrentToastList().map((toast) => toast.id);
+
+  if (lastToast.id === currentToastIdList[currentToastIdList.length - 1]) {
+    return;
+  }
+
+  if (prevFirstToast.id !== currentToastList[FIRST_TOAST_INDEX].id) {
+    indexToast = FIRST_TOAST_INDEX;
+  }
+
+  if (currentToastIdList.length > 0) {
+    applyToast(indexToast);
+  }
+
+  return;
+}
+const body = document.body;
+const config = {
+  childList: true,
+  subtree: true,
+  attributes: true,
+  attributeFilter: ["class", "style"],
+  characterData: true,
+};
 
 async function getProject() {
   try {
@@ -28,6 +60,7 @@ async function getProject() {
         .from("project")
         .select("*")
         .like("link", `%${origin}%`);
+
       if (resultProject.length === 0) {
         throw new Error(error);
       }
@@ -46,7 +79,6 @@ async function getProject() {
 async function getToastList(projectId) {
   try {
     if (projectId) {
-      const INDEX_FIRST_TOAST = 0;
       const { data: resultToastList, error } = await client
         .from("toast")
         .select("*")
@@ -56,8 +88,11 @@ async function getToastList(projectId) {
         throw new Error(error);
       }
 
-      toastList = [...resultToastList];
-      applyToast(INDEX_FIRST_TOAST);
+      totalToastList.push(...resultToastList);
+
+      if (getCurrentToastList().length > 0) {
+        applyToast(FIRST_TOAST_INDEX);
+      }
     }
   } catch (e) {
     console.log(
@@ -68,9 +103,30 @@ async function getToastList(projectId) {
   return;
 }
 
-function applyToast(indexToast) {
+function getCurrentToastList() {
+  function getToastCurrentDocument(toast) {
+    const target = document.querySelector(`#${toast.target_element_id}`);
+    if (target) {
+      return toast;
+    }
+  }
+
+  currentToastList = totalToastList.filter(getToastCurrentDocument);
+
+  return currentToastList;
+}
+
+function getFirstToast() {
+  prevFirstToast = currentToastList[FIRST_TOAST_INDEX];
+  return;
+}
+
+function applyToast() {
+  getFirstToast();
+
   const { target_element_id, message_title, message_body, image_url, background_opacity } =
-    toastList[indexToast];
+    currentToastList[indexToast];
+
   targetElement = document.querySelector(`#${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
@@ -96,6 +152,10 @@ function applyToast(indexToast) {
 
   createPopover();
   setPopover(targetElement, message_title, message_body, image_url);
+
+  lastToast = currentToastList[indexToast];
+
+  observer.disconnect(body, config);
 
   window.addEventListener("resize", handleOverlayWindowResizeScroll);
   window.addEventListener("resize", handlePopoverWindowResizeScroll);
@@ -265,20 +325,22 @@ function handleToastButtonClick() {
   const overlay = document.querySelector("#welcomeToastOverlay");
   const popover = document.querySelector("#welcomeToastPopover");
 
+  indexToast += 1;
+
   overlay.remove();
   popover.remove();
 
-  if (countToastClicked === toastList.length - 1) {
+  if (indexToast === currentToastList.length) {
+    observer.observe(body, config);
     return;
   }
 
-  countToastClicked += 1;
-  applyToast(countToastClicked);
+  applyToast(indexToast);
   return;
 }
 
 function handleOverlayWindowResizeScroll() {
-  const { target_element_id, background_opacity } = toastList[0];
+  const { target_element_id, background_opacity } = currentToastList[indexToast];
   const targetElement = document.querySelector(`#${target_element_id}`);
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const yTargetInLayout = Math.ceil(t.yTarget) - WHITE_SPACE;
@@ -296,7 +358,7 @@ function handleOverlayWindowResizeScroll() {
 }
 
 function handlePopoverWindowResizeScroll() {
-  const { target_element_id } = toastList[0];
+  const { target_element_id } = currentToastList[indexToast];
   const targetElement = document.querySelector(`#${target_element_id}`);
   const popover = document.querySelector("#welcomeToastPopover");
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
@@ -326,6 +388,7 @@ function handleRemoveToast(event) {
   if (event.target.tagName === "path") {
     overlay.remove();
     popover.remove();
+    observer.observe(body, config);
   }
   return;
 }
