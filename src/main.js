@@ -124,8 +124,23 @@ function getFirstToast() {
 function applyToast() {
   getFirstToast();
 
-  const { target_element_id, message_title, message_body, image_url, background_opacity } =
-    currentToastList[indexToast];
+  const {
+    id: toastId,
+    target_element_id,
+    message_title,
+    message_body,
+    image_url,
+    background_opacity,
+  } = currentToastList[indexToast];
+
+  const isViewedToast = new Set(getToastHistory()).has(toastId);
+  if (isViewedToast) {
+    return;
+  }
+
+  if (indexToast === FIRST_TOAST_INDEX) {
+    setToastHistory(currentToastList[FIRST_TOAST_INDEX].id);
+  }
 
   targetElement = document.getElementById(`${target_element_id}`);
 
@@ -318,6 +333,18 @@ function setPopover(targetElement, message_title, message_body, image_url) {
   popoverHeader.style = "margin-bottom: 10px;";
   popoverDescription.style = "margin-bottom: 10px;";
   popoverFooter.style = "display: flex; align-items: center; justify-content: space-between;";
+  return;
+}
+
+function getToastHistory() {
+  const toastIdListViewed = JSON.parse(localStorage.getItem("welcome-toast-viewed"));
+  return toastIdListViewed;
+}
+
+function setToastHistory(firstToastId) {
+  const toastHistoryUpdate =
+    getToastHistory() === null ? [firstToastId] : [...getToastHistory(), firstToastId];
+  localStorage.setItem("welcome-toast-viewed", JSON.stringify(toastHistoryUpdate));
   return;
 }
 
