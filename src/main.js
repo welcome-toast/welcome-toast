@@ -50,77 +50,6 @@ const config = {
   characterData: true,
 };
 
-async function getProject() {
-  try {
-    const origin = window.location.origin;
-    client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
-
-    if (origin && origin !== "") {
-      const { data: resultProject, error } = await client
-        .from("project")
-        .select("*")
-        .like("link", `%${origin}%`);
-
-      if (resultProject.length === 0) {
-        throw new Error(error);
-      }
-
-      getToastList(resultProject[0].id);
-    }
-  } catch (e) {
-    console.log(
-      "등록되지 않은 URL입니다. @welcome-toast 관리자 페이지에서 프로젝트 설정을 확인해주세요.",
-    );
-    console.error(e);
-  }
-  return;
-}
-
-async function getToastList(projectId) {
-  try {
-    if (projectId) {
-      const { data: resultToastList, error } = await client
-        .from("toast")
-        .select("*")
-        .eq("project_id", projectId);
-
-      if (resultToastList.length === 0) {
-        throw new Error(error);
-      }
-
-      totalToastList.push(...resultToastList);
-
-      if (getCurrentToastList().length > 0) {
-        applyToast(FIRST_TOAST_INDEX);
-      }
-    }
-  } catch (e) {
-    console.log(
-      "등록된 토스트가 없습니다. @welcome-toast 관리자 페이지에서 토스트 설정을 확인해주세요.",
-    );
-    console.error(e);
-  }
-  return;
-}
-
-function getCurrentToastList() {
-  function getToastCurrentDocument(toast) {
-    const target = document.getElementById(`${toast.target_element_id}`);
-    if (target) {
-      return toast;
-    }
-  }
-
-  currentToastList = totalToastList.filter(getToastCurrentDocument);
-
-  return currentToastList;
-}
-
-function getFirstToast() {
-  prevFirstToast = currentToastList[FIRST_TOAST_INDEX];
-  return;
-}
-
 function applyToast() {
   getFirstToast();
 
@@ -222,6 +151,77 @@ function applyToastAdminPreview() {
   window.addEventListener("scroll", handleOverlayWindowResizeScroll);
   window.addEventListener("scroll", handlePopoverWindowResizeScroll);
   window.addEventListener("click", handleRemoveToast);
+}
+
+async function getProject() {
+  try {
+    const origin = window.location.origin;
+    client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
+
+    if (origin && origin !== "") {
+      const { data: resultProject, error } = await client
+        .from("project")
+        .select("*")
+        .like("link", `%${origin}%`);
+
+      if (resultProject.length === 0) {
+        throw new Error(error);
+      }
+
+      getToastList(resultProject[0].id);
+    }
+  } catch (e) {
+    console.log(
+      "등록되지 않은 URL입니다. @welcome-toast 관리자 페이지에서 프로젝트 설정을 확인해주세요.",
+    );
+    console.error(e);
+  }
+  return;
+}
+
+async function getToastList(projectId) {
+  try {
+    if (projectId) {
+      const { data: resultToastList, error } = await client
+        .from("toast")
+        .select("*")
+        .eq("project_id", projectId);
+
+      if (resultToastList.length === 0) {
+        throw new Error(error);
+      }
+
+      totalToastList.push(...resultToastList);
+
+      if (getCurrentToastList().length > 0) {
+        applyToast(FIRST_TOAST_INDEX);
+      }
+    }
+  } catch (e) {
+    console.log(
+      "등록된 토스트가 없습니다. @welcome-toast 관리자 페이지에서 토스트 설정을 확인해주세요.",
+    );
+    console.error(e);
+  }
+  return;
+}
+
+function getCurrentToastList() {
+  function getToastCurrentDocument(toast) {
+    const target = document.getElementById(`${toast.target_element_id}`);
+    if (target) {
+      return toast;
+    }
+  }
+
+  currentToastList = totalToastList.filter(getToastCurrentDocument);
+
+  return currentToastList;
+}
+
+function getFirstToast() {
+  prevFirstToast = currentToastList[FIRST_TOAST_INDEX];
+  return;
 }
 
 function getWindowAndTargetSizePosition(targetElement) {
