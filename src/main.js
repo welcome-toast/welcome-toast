@@ -159,6 +159,8 @@ async function getProject() {
     client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 
     if (origin && origin !== "") {
+      setToastStyle();
+
       const { data: resultProject, error } = await client
         .from("project")
         .select("*")
@@ -329,10 +331,27 @@ function setPopover(targetElement, message_title, message_body, image_url) {
     return;
   }
 
-  popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 200px; max-width: 250px; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #242424; color: white; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
+  popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 200px; max-width: 250px; padding: 15px; font-family: Arial !important; border: 1px !important; margin: 5px; border-radius: 5% !important; background: #242424 !important; color: white !important; box-shadow: 0 1px 10px #0006 !important; z-index: 1000000; overflow: clip !important; overflow-wrap: break-word !important; word-break: break-all !important;`;
   popoverHeader.style = "margin-bottom: 10px;";
   popoverDescription.style = "margin-bottom: 10px;";
-  popoverFooter.style = "display: flex; align-items: center; justify-content: space-between;";
+  popoverFooter.style =
+    "display: flex; align-items: end !important; justify-content: space-between;";
+  welcomeToastPopoverButton.style =
+    "border-radius: 8px !important; border: 1px solid transparent; padding: 0.6em 1.2em !important; font-size: 1em !important; font-weight: 500 !important; background-color: #1a1a1a !important; cursor: pointer !important; transition: border-color 0.25s !important;";
+  return;
+}
+
+function setToastStyle() {
+  const stylesheet = document.createElement("style");
+  const style =
+    "#welcomeToastPopoverButton:hover { border-color: #646cff !important; } #welcomeToastPopoverButton:focus, #welcomeToastPopoverButton:focus-visible { outline: 4px auto -webkit-focus-ring-color !important; }";
+
+  stylesheet.appendChild(document.createTextNode(style));
+  stylesheet.type = "text/css";
+
+  const head = document.head || document.getElementsByTagName("head")[0];
+  head.appendChild(stylesheet);
+
   return;
 }
 
