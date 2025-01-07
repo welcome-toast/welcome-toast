@@ -105,7 +105,7 @@ async function getToastList(projectId) {
 
 function getCurrentToastList() {
   function getToastCurrentDocument(toast) {
-    const target = document.querySelector(`#${toast.target_element_id}`);
+    const target = document.getElementById(`${toast.target_element_id}`);
     if (target) {
       return toast;
     }
@@ -127,7 +127,7 @@ function applyToast() {
   const { target_element_id, message_title, message_body, image_url, background_opacity } =
     currentToastList[indexToast];
 
-  targetElement = document.querySelector(`#${target_element_id}`);
+  targetElement = document.getElementById(`${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
     console.log(
@@ -168,7 +168,7 @@ function applyToast() {
 function applyToastAdminPreview() {
   const { target_element_id, message_title, message_body, image_url, background_opacity } =
     messageFromPreview;
-  targetElement = document.querySelector(`#${target_element_id}`);
+  targetElement = document.getElementById(`${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
     console.log(
@@ -179,8 +179,8 @@ function applyToastAdminPreview() {
 
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const yTargetInLayout = Math.ceil(t.yTarget) - WHITE_SPACE;
-  const overlay = document.querySelector("#welcomeToastOverlay");
-  const popover = document.querySelector("#welcomeToastPopover");
+  const overlay = document.getElementById("welcomeToastOverlay");
+  const popover = document.getElementById("welcomeToastPopover");
 
   if (!overlay) {
     createOverlay();
@@ -242,7 +242,7 @@ function setOverlay(
   yTarget,
   background_opacity,
 ) {
-  const overlay = document.querySelector("#welcomeToastOverlay");
+  const overlay = document.getElementById("welcomeToastOverlay");
   overlay.innerHTML = `
       <svg
         viewBox="0 0 ${widthViewport} ${heightViewport}"
@@ -263,7 +263,7 @@ function setOverlay(
 }
 
 function createPopover() {
-  const overlay = document.querySelector("#welcomeToastOverlay");
+  const overlay = document.getElementById("welcomeToastOverlay");
 
   const popover = window.document.createElement("div");
   const popoverImage = window.document.createElement("div");
@@ -286,11 +286,11 @@ function createPopover() {
 }
 
 function setPopover(targetElement, message_title, message_body, image_url) {
-  const popover = document.querySelector("#welcomeToastPopover");
-  const popoverImage = document.querySelector("#welcomeToastPopoverImage");
-  const popoverHeader = document.querySelector("#welcomeToastPopoverHeader");
-  const popoverDescription = document.querySelector("#welcomeToastPopoverDescription");
-  const popoverFooter = document.querySelector("#welcomeToastPopoverFooter");
+  const popover = document.getElementById("welcomeToastPopover");
+  const popoverImage = document.getElementById("welcomeToastPopoverImage");
+  const popoverHeader = document.getElementById("welcomeToastPopoverHeader");
+  const popoverDescription = document.getElementById("welcomeToastPopoverDescription");
+  const popoverFooter = document.getElementById("welcomeToastPopoverFooter");
 
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const gapRight = w.widthViewport - (t.right + t.widthTarget);
@@ -322,8 +322,8 @@ function setPopover(targetElement, message_title, message_body, image_url) {
 }
 
 function handleToastButtonClick() {
-  const overlay = document.querySelector("#welcomeToastOverlay");
-  const popover = document.querySelector("#welcomeToastPopover");
+  const overlay = document.getElementById("welcomeToastOverlay");
+  const popover = document.getElementById("welcomeToastPopover");
 
   indexToast += 1;
 
@@ -341,7 +341,7 @@ function handleToastButtonClick() {
 
 function handleOverlayWindowResizeScroll() {
   const { target_element_id, background_opacity } = currentToastList[indexToast];
-  const targetElement = document.querySelector(`#${target_element_id}`);
+  const targetElement = document.getElementById(`${target_element_id}`);
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const yTargetInLayout = Math.ceil(t.yTarget) - WHITE_SPACE;
 
@@ -359,8 +359,8 @@ function handleOverlayWindowResizeScroll() {
 
 function handlePopoverWindowResizeScroll() {
   const { target_element_id } = currentToastList[indexToast];
-  const targetElement = document.querySelector(`#${target_element_id}`);
-  const popover = document.querySelector("#welcomeToastPopover");
+  const targetElement = document.getElementById(`${target_element_id}`);
+  const popover = document.getElementById("welcomeToastPopover");
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const gapRight = w.widthViewport - (t.right + t.widthTarget);
 
@@ -382,8 +382,8 @@ function handlePopoverWindowResizeScroll() {
 }
 
 function handleRemoveToast(event) {
-  const overlay = document.querySelector("#welcomeToastOverlay");
-  const popover = document.querySelector("#welcomeToastPopover");
+  const overlay = document.getElementById("welcomeToastOverlay");
+  const popover = document.getElementById("welcomeToastPopover");
 
   if (event.target.tagName === "path") {
     overlay.remove();
