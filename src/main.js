@@ -20,15 +20,14 @@ let client;
 
 async function getProject() {
   try {
-    const href = window.location.href;
+    const origin = window.location.origin;
     client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 
-    if (href && href !== "") {
+    if (origin && origin !== "") {
       const { data: resultProject, error } = await client
         .from("project")
         .select("*")
-        .eq("link", href);
-
+        .like("link", `%${origin}%`);
       if (resultProject.length === 0) {
         throw new Error(error);
       }
