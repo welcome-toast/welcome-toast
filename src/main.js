@@ -10,10 +10,11 @@ const TARGET_ORIGIN = "https://welcome-toast.com";
 const SUPABASE_URL = "https://mepmumyanfvgmvjfjpld.supabase.co";
 const SUPABASE_API_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lcG11bXlhbmZ2Z212amZqcGxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM1Nzg2MDUsImV4cCI6MjA0OTE1NDYwNX0.HojnVr-YfuBy25jf9qy5DKYkqvdowZ0Pz2FScfIN-04";
+let client;
+
 const WHITE_SPACE = 5;
 const FIRST_TOAST_INDEX = 0;
 let indexToast = FIRST_TOAST_INDEX;
-
 const totalToastList = [];
 let currentToastList = [];
 let prevFirstToast;
@@ -21,13 +22,21 @@ let lastToast;
 let overlay = null;
 let targetElement = null;
 let messageFromPreview = "";
-let client;
+
+const ancestorOrigins = window.location.ancestorOrigins;
 
 const observer = new MutationObserver(mutationCallback);
 function mutationCallback() {
+  if (ancestorOrigins.contains(TARGET_ORIGIN)) {
+    return;
+  }
+
   const currentToastIdList = getCurrentToastList().map((toast) => toast.id);
 
-  if (lastToast.id === currentToastIdList[currentToastIdList.length - 1]) {
+  if (
+    lastToast === undefined ||
+    lastToast.id === currentToastIdList[currentToastIdList.length - 1]
+  ) {
     return;
   }
 
@@ -51,6 +60,9 @@ const config = {
 };
 
 function applyToast() {
+  if (ancestorOrigins.contains(TARGET_ORIGIN)) {
+    return;
+  }
   getFirstToast();
 
   const {
@@ -374,11 +386,14 @@ function handleToastButtonClick() {
   const overlay = document.getElementById("welcomeToastOverlay");
   const popover = document.getElementById("welcomeToastPopover");
 
-  indexToast += 1;
-
   overlay.remove();
   popover.remove();
 
+  if (ancestorOrigins.contains(TARGET_ORIGIN)) {
+    return;
+  }
+
+  indexToast += 1;
   if (indexToast === currentToastList.length) {
     observer.observe(body, config);
     return;
@@ -389,7 +404,9 @@ function handleToastButtonClick() {
 }
 
 function handleOverlayWindowResizeScroll() {
-  const { target_element_id, background_opacity } = currentToastList[indexToast];
+  const { target_element_id, background_opacity } = ancestorOrigins.contains(TARGET_ORIGIN)
+    ? messageFromPreview
+    : currentToastList[indexToast];
   const targetElement = document.getElementById(`${target_element_id}`);
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
   const yTargetInLayout = Math.ceil(t.yTarget) - WHITE_SPACE;
@@ -407,7 +424,9 @@ function handleOverlayWindowResizeScroll() {
 }
 
 function handlePopoverWindowResizeScroll() {
-  const { target_element_id } = currentToastList[indexToast];
+  const { target_element_id } = ancestorOrigins.contains(TARGET_ORIGIN)
+    ? messageFromPreview
+    : currentToastList[indexToast];
   const targetElement = document.getElementById(`${target_element_id}`);
   const popover = document.getElementById("welcomeToastPopover");
   const { window: w, target: t } = getWindowAndTargetSizePosition(targetElement);
@@ -437,6 +456,10 @@ function handleRemoveToast(event) {
   if (event.target.tagName === "path") {
     overlay.remove();
     popover.remove();
+
+    if (ancestorOrigins.contains(TARGET_ORIGIN)) {
+      return;
+    }
     observer.observe(body, config);
   }
   return;
