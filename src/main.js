@@ -50,7 +50,7 @@ function mutationCallback() {
 
   return;
 }
-const body = document.body;
+let body = document.body;
 const config = {
   childList: true,
   subtree: true,
@@ -167,6 +167,7 @@ function applyToastAdminPreview() {
 
 async function getProject() {
   try {
+    body = document.body;
     const origin = window.location.origin;
     client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 
