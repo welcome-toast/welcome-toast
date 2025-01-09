@@ -177,6 +177,7 @@ async function getProject() {
 
     if (origin && origin !== "") {
       setToastStyle();
+      handleLoadDoneMessageParent();
 
       const { data: resultProject, error } = await client
         .from("project")
@@ -474,6 +475,12 @@ function handleRemoveToast(event) {
 function handleMessageParent(event) {
   const target = JSON.parse(JSON.stringify(event.target.id));
   window.parent.postMessage({ target }, TARGET_ORIGIN);
+  return;
+}
+
+function handleLoadDoneMessageParent() {
+  const MESSAGE = "Preview loaded successfully.";
+  window.parent.postMessage({ MESSAGE }, TARGET_ORIGIN);
   return;
 }
 
