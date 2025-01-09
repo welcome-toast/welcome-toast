@@ -124,11 +124,6 @@ function applyToast() {
 function applyToastAdminPreview() {
   const { target_element_id, message_title, message_body, image_url, background_opacity } =
     messageFromPreview;
-
-  if (message_title.length === 0 && message_body.length === 0) {
-    return;
-  }
-
   targetElement = document.getElementById(`${target_element_id}`);
 
   if (!target_element_id || !targetElement) {
