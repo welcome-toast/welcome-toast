@@ -50,7 +50,6 @@ function mutationCallback() {
 
   return;
 }
-const body = document.body;
 const config = {
   childList: true,
   subtree: true,
@@ -111,7 +110,7 @@ function applyToast() {
 
   lastToast = currentToastList[indexToast];
 
-  observer.disconnect(body, config);
+  observer.disconnect(document.body, config);
 
   window.addEventListener("resize", handleOverlayWindowResizeScroll);
   window.addEventListener("resize", handlePopoverWindowResizeScroll);
@@ -397,7 +396,7 @@ function handleToastButtonClick() {
 
   indexToast += 1;
   if (indexToast === currentToastList.length) {
-    observer.observe(body, config);
+    observer.observe(document.body, config);
     return;
   }
 
@@ -462,7 +461,7 @@ function handleRemoveToast(event) {
     if (ancestorOrigins.contains(TARGET_ORIGIN)) {
       return;
     }
-    observer.observe(body, config);
+    observer.observe(document.body, config);
   }
   return;
 }
