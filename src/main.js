@@ -479,8 +479,8 @@ function handleMessageParent(event) {
 }
 
 function handleLoadDoneMessageParent() {
-  const MESSAGE = "Preview loaded successfully.";
-  window.parent.postMessage({ MESSAGE }, TARGET_ORIGIN);
+  const isPreviewLoaded = JSON.parse(JSON.stringify(true));
+  window.parent.postMessage({ isPreviewLoaded }, TARGET_ORIGIN);
   return;
 }
 
