@@ -199,7 +199,8 @@ async function getToastList(projectId) {
       const { data: resultToastList, error } = await client
         .from("toast")
         .select("*")
-        .eq("project_id", projectId);
+        .eq("project_id", projectId)
+        .order("id", { ascending: true });
 
       if (resultToastList.length === 0) {
         throw new Error(error);
