@@ -223,8 +223,12 @@ async function getToastList(projectId) {
 function getCurrentToastList() {
   function getToastCurrentDocument(toast) {
     const target = document.getElementById(`${toast.target_element_id}`);
-    if (target && toast.id !== lastToast.id) {
-      return toast;
+    if (target) {
+      if (lastToast !== undefined) {
+        if (toast.id !== lastToast.id) {
+          return toast;
+        }
+      }
     }
   }
 
