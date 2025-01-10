@@ -40,8 +40,10 @@ function mutationCallback() {
     return;
   }
 
-  if (prevFirstToast.id !== currentToastList[FIRST_TOAST_INDEX].id) {
-    indexToast = FIRST_TOAST_INDEX;
+  if (currentToastList.length > 0) {
+    if (currentToastList[FIRST_TOAST_INDEX].id !== prevFirstToast.id) {
+      indexToast = FIRST_TOAST_INDEX;
+    }
   }
 
   if (currentToastIdList.length > 0) {
