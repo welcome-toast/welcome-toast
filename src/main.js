@@ -480,7 +480,7 @@ function handleLoadDoneMessageParent() {
 
 window.addEventListener("load", getProject);
 window.addEventListener("message", (event) => {
-  if (event.origin === TARGET_ORIGIN) {
+  if (event.origin === TARGET_ORIGIN && ancestorOrigins.contains(TARGET_ORIGIN)) {
     messageFromPreview = event.data;
     applyToastAdminPreview();
   }
