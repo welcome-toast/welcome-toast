@@ -143,8 +143,9 @@
   </td>
   <td width="50%">
 
-- 스크립트 연동 후 배포 상태라면 토스트를 적용할 준비가 끝난 상태예요.
-- 강조할 타겟 요소의 id를 심고 관리자 페이지에서 입력/선택해 주세요.
+  **웹사이트 연동 예시**
+  - 스크립트 연동 후 배포 상태라면 토스트를 적용할 준비가 끝난 상태예요.
+  - 강조할 타겟 요소의 id를 심고 관리자 페이지에서 입력/선택해 주세요.
 
   </td>
 
@@ -211,12 +212,13 @@
 
 현재 사용자에게 보이는 뷰포트를 기준으로 타겟 요소의 상대적 위치를 반환하는 `Element.getBoundingClientRect()` 메소드를 위치 계산에 핵심적으로 활용했습니다. 계산하고자 하는 타겟 요소의 크기, 위치는 고정된 값이 아니었습니다. 특히 scroll, resize시에도 활용 가능한 위치를 동적으로 계산해야 했기 때문에, 해당 메소드를 활용했습니다.
 
-또한 메소드를 활용한 계산이 반복되어, `getWindowAndTargetSizePosition` 라는 함수로 추상화를 했습니다. (아래 코드 첨부) 추상화 한 함수는 최초 계산 시점을 비롯해, scroll 이벤트와 resize 이벤트의 핸들러 내부에서 활용했습니다. 이를 통해, 배경과 토스트 메시지의 위치 및 크기 정보를 동적으로 계산하고 적용했습니다. 계산 시점의 window viewport 사이즈와 `Element.getBoundingClientRect()` 메소드가 반환하는 DOMRect 객체로 타겟 요소의 위치, 크기 정보를 얻어 토스트 메시지 위치 속성값을 를 동적으로 조정할 수 있도록 었습니다.
+또한 메소드를 활용한 계산이 반복되어, `getWindowAndTargetSizePosition` 라는 함수로 추상화를 했습니다.
 
 ```js
 // 최초 토스트 적용, 동적으로 위치 조정시 활용하기 위해 함수 추상화
 function getWindowAndTargetSizePosition(targetElement) {
-  const { width: widthViewport, height: heightViewport } = window.visualViewport; // // 현재 사용자가 보는 뷰포트 크기
+  // 현재 사용자가 보는 뷰포트 크기
+  const { width: widthViewport, height: heightViewport } = window.visualViewport;
   const {
     width: widthTarget, height: heightTarget, // 현재 타겟의 크기
     x: xTarget, y: yTarget, right, bottom,  // 현재 타겟의 위치
@@ -224,6 +226,8 @@ function getWindowAndTargetSizePosition(targetElement) {
   // ...
 }
 ```
+
+추상화 한 함수는 최초 계산 시점을 비롯해, scroll 이벤트와 resize 이벤트의 핸들러 내부에서 활용했습니다. 이를 통해, 배경과 토스트 메시지의 위치 및 크기 정보를 동적으로 계산하고 적용했습니다. 계산 시점의 window viewport 사이즈와 `Element.getBoundingClientRect()` 메소드가 반환하는 DOMRect 객체로 타겟 요소의 위치, 크기 정보를 얻어 토스트 메시지 위치 속성값을 를 동적으로 조정할 수 있도록 었습니다.
 
 <br>
 
@@ -235,8 +239,8 @@ function getWindowAndTargetSizePosition(targetElement) {
 
 <br>
 
-1. 타겟 요소를 제외한 영역을 어둡게 하는 배경
-2. 타겟 요소 표시되는 토스트 메시지
+1. 타겟 요소를 제외한 영역을 어둡게 하는 배경 (overlay)
+2. 타겟 요소 표시되는 토스트 메시지 (popover)
 
 <br>
 
@@ -250,17 +254,16 @@ function getWindowAndTargetSizePosition(targetElement) {
 function createOverlay() {
   // 배경 요소 생성
 }
-
 function createPopover() {
   // 토스트 메시지 요소 생성
 }
-
-function setOverlay(widthViewport, heightViewport, widthTarget, heightTarget, xTarget, yTarget, background_opacity,
+function setOverlay(
+  widthViewport, heightViewport,
+  widthTarget, heightTarget, xTarget, yTarget, background_opacity,
 ) {
   // 배경 위치 초기화 및 업데이트
   // svg, path 속성 업데이트
 }
-
 function setPopover(targetElement, message_title, message_body, image_url) {
     // 토스트 메시지 위치 초기화 및 업데이트
     // innerHTML, style 속성 업데이트
@@ -293,9 +296,38 @@ function mutationCallback() {
 
 <br>
 
-초기 구현방식은 MPA에 적합했던 터라, 여러 서비스에 적용해보며 테스트 하던 중 SPA 지원하기 어렵다는 사실을 발견했습니다. SPA 특성상 최초 로드 시에만 스크립트가 실행되고, 페이지 최초 로드 이후 DOM을 동적으로 업데이트 하기 때문입니다. 프론트엔드 생태계에 큰 축을 구성하는 SPA에 대한 대응은 필수적이라 판단했습니다.
+초기 구현방식은 MPA에 적합했던 터라, 여러 서비스에 적용해보며 테스트 하던 중 SPA 지원하기 어렵다는 사실을 발견했습니다. SPA 특성상 최초 로드 시에만 스크립트가 실행되고, 페이지 최초 로드 이후 DOM을 동적으로 업데이트 하기 때문입니다. 프론트엔드 생태계에 큰 축을 구성하는 SPA에 대한 대응은 필수적이라 판단했습니다. 이러한 의사결정 덕분에 SDK의 적용 범위를 넓힐 수 있었습니다.
 
-SPA는 적절한 시점에 토스트 메시지가 표시되도록 하는 로직을 설계하는 것이 중요했습니다. 이러한 의사결정 덕분에 SDK의 적용 범위를 넗힐 수 있었습니다.
+SPA는 적절한 시점에 토스트 메시지가 표시되도록 하는 로직을 설계하는 것이 중요했습니다. 라우트 혹은 페이지 전환이 발생했고, 그 결과 현재 문서에 타겟 요소가 있다면 토스트가 적용되도록 했습니다. 이를 위해 DOM 변화가 감지되면, 전체 토스트 메시지 목록 중 현재 문서에 타겟 요소 id 존재하는 토스트가 있는지 검사했습니다. 여러 토스트를 관리하다보니 복잡도가 올라갔지만, 이전에 적용된 토스트와 현재 적용 대기중인 토스트 히스토리를 관리함으로써 페이지 전환에 따라 의도대로 적용할 수 있었습니다.
+
+```js
+const observer = new MutationObserver(mutationCallback);
+function mutationCallback() {
+  // ...
+  // 초기 로드시, 혹은 적용가능한 토스트가 남지 않았을 때 토스트가 적용되지 않도록 처리
+  if (
+    lastToast === undefined ||
+    lastToast.id === currentToastIdList[currentToastIdList.length - 1]
+  ) {
+    return;
+  }
+
+  // 현재 문서에 적용할 타겟 요소가 있는지 검사
+  if (currentToastList.length > 0) {
+    // 실제로 적용할 토스트 목록이 바뀌었는지 검사
+    // 현재 문서 토스트 목록의 첫 토스트 id와 이전에 이미 적용된 토스트 id 비교
+    if (currentToastList[FIRST_TOAST_INDEX].id !== prevFirstToast.id) {
+      // index 초기화하여 현재 토스트 목록의 첫 요소부터 적용되도록 함
+      indexToast = FIRST_TOAST_INDEX;
+    }
+  }
+
+  if (currentToastIdList.length > 0) {
+    applyToast(indexToast);
+  }
+  // ...
+}
+```
 
 <br>
 
@@ -356,6 +388,10 @@ targetWindow.postMessage(message, targetOrigin);
 <br>
 
 ### 4-4-3. 클릭만으로 웹사이트 요소의 id를 관리자 페이지로 가져오는 방법
+
+<img width="100%" alt="토스트 요소 클릭" src="./src/asset/docs-toast-click-el.gif">
+
+<br>
 
 웹사이트 운영자가 관리자 페이지에서 GUI로 토스트 메시지를 설정한다면, 실제 적용될 모습을 바로 보면서 작업하는 것이 중요하다고 생각했습니다. 이를 위해 관리자 페이지에서 토스트 설정 에디터와 함께, 웹사이트를 미리보기로 띄우고 적용된 모습을 미리 볼 수 있게 구현했습니다. 특히 사용자가 id를 모두 외우지 못 하더라도, DOM 요소를 클릭한 것만으로 타겟 요소로 지정할 수 있도록 했습니다. 메시지 제목, 본문과 스타일을 입력할 때마다 실시간으로 미리보기에 반영되어 직관적으로 설정할 수 있습니다.
 
