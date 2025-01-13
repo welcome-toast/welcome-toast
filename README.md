@@ -24,7 +24,7 @@
 
 - [1. 개발 배경](#1-%EA%B0%9C%EB%B0%9C-%EB%B0%B0%EA%B2%BD)
   * [1-1. 처음 방문한 웹사이트를 바로 떠난 적 있으신가요?](#1-1-%EC%B2%98%EC%9D%8C-%EB%B0%A9%EB%AC%B8%ED%95%9C-%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8%EB%A5%BC-%EB%B0%94%EB%A1%9C-%EB%96%A0%EB%82%9C-%EC%A0%81-%EC%9E%88%EC%9C%BC%EC%8B%A0%EA%B0%80%EC%9A%94)
-  * [1-2. 손이 많이 가는 토스트 메시지 구현, 이제 누구나 쉽게 접근할 수 있도록.](#1-2-%EC%86%90%EC%9D%B4-%EB%A7%8E%EC%9D%B4-%EA%B0%80%EB%8A%94-%ED%86%A0%EC%8A%A4%ED%8A%B8-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B5%AC%ED%98%84-%EC%9D%B4%EC%A0%9C-%EB%88%84%EA%B5%AC%EB%82%98-%EC%89%BD%EA%B2%8C-%EC%A0%91%EA%B7%BC%ED%95%A0-%EC%88%98-%EC%9E%88%EB%8F%84%EB%A1%9D)
+  * [1-2. 손이 많이 가는 토스트 메시지, 이제 누구나 쉽게 만들 수 있도록.](#1-2-%EC%86%90%EC%9D%B4-%EB%A7%8E%EC%9D%B4-%EA%B0%80%EB%8A%94-%ED%86%A0%EC%8A%A4%ED%8A%B8-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%9D%B4%EC%A0%9C-%EB%88%84%EA%B5%AC%EB%82%98-%EC%89%BD%EA%B2%8C-%EB%A7%8C%EB%93%A4-%EC%88%98-%EC%9E%88%EB%8F%84%EB%A1%9D)
 - [2. 기술 스택](#2-%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%83%9D)
   * [2-1. 연동 스크립트](#2-1-%EC%97%B0%EB%8F%99-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8)
   * [2-2. 관리자 페이지](#2-2-%EA%B4%80%EB%A6%AC%EC%9E%90-%ED%8E%98%EC%9D%B4%EC%A7%80)
@@ -38,10 +38,10 @@
     + [4-2-2. 타겟을 강조하는 배경, 토스트 메시지 동적으로 만들기 (오버레이, 팝오버 구현)](#4-2-2-%ED%83%80%EA%B2%9F%EC%9D%84-%EA%B0%95%EC%A1%B0%ED%95%98%EB%8A%94-%EB%B0%B0%EA%B2%BD-%ED%86%A0%EC%8A%A4%ED%8A%B8-%EB%A9%94%EC%8B%9C%EC%A7%80-%EB%8F%99%EC%A0%81%EC%9C%BC%EB%A1%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0-%EC%98%A4%EB%B2%84%EB%A0%88%EC%9D%B4-%ED%8C%9D%EC%98%A4%EB%B2%84-%EA%B5%AC%ED%98%84)
   * [4-3. Single Page Application에서도 동작할 수 있을까?](#4-3-single-page-application%EC%97%90%EC%84%9C%EB%8F%84-%EB%8F%99%EC%9E%91%ED%95%A0-%EC%88%98-%EC%9E%88%EC%9D%84%EA%B9%8C)
     + [4-3-1. `MutationObserver API`를 활용한 DOM 변화 추적](#4-3-1-mutationobserver-api%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-dom-%EB%B3%80%ED%99%94-%EC%B6%94%EC%A0%81)
-    + [4-3-2. 예상 보다 빈번한 DOM 변화에 대응하기 (Observer on/off 시점 구분)](#4-3-2-%EC%98%88%EC%83%81-%EB%B3%B4%EB%8B%A4-%EB%B9%88%EB%B2%88%ED%95%9C-dom-%EB%B3%80%ED%99%94%EC%97%90-%EB%8C%80%EC%9D%91%ED%95%98%EA%B8%B0-observer-onoff-%EC%8B%9C%EC%A0%90-%EA%B5%AC%EB%B6%84)
+    + [4-3-2. 예상보다 빈번한 DOM 변화에 대응하기 (Observer on/off 시점 구분)](#4-3-2-%EC%98%88%EC%83%81%EB%B3%B4%EB%8B%A4-%EB%B9%88%EB%B2%88%ED%95%9C-dom-%EB%B3%80%ED%99%94%EC%97%90-%EB%8C%80%EC%9D%91%ED%95%98%EA%B8%B0-observer-onoff-%EC%8B%9C%EC%A0%90-%EA%B5%AC%EB%B6%84)
   * [4-4. 개발자가 아니어도 쉽게, GUI 기반 토스트 메시지 에디터](#4-4-%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80-%EC%95%84%EB%8B%88%EC%96%B4%EB%8F%84-%EC%89%BD%EA%B2%8C-gui-%EA%B8%B0%EB%B0%98-%ED%86%A0%EC%8A%A4%ED%8A%B8-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%97%90%EB%94%94%ED%84%B0)
     + [4-4-1. 피그마처럼 보면서, 토스트 메시지를 만들고 바로 적용시킬 수 있으면 어떨까?](#4-4-1-%ED%94%BC%EA%B7%B8%EB%A7%88%EC%B2%98%EB%9F%BC-%EB%B3%B4%EB%A9%B4%EC%84%9C-%ED%86%A0%EC%8A%A4%ED%8A%B8-%EB%A9%94%EC%8B%9C%EC%A7%80%EB%A5%BC-%EB%A7%8C%EB%93%A4%EA%B3%A0-%EB%B0%94%EB%A1%9C-%EC%A0%81%EC%9A%A9%EC%8B%9C%ED%82%AC-%EC%88%98-%EC%9E%88%EC%9C%BC%EB%A9%B4-%EC%96%B4%EB%96%A8%EA%B9%8C)
-    + [4-4-2. 에디터에서 웹사이트 로드 방법은 뭐가 최선일까? : `fetch` vs `iframe`](#4-4-2-%EC%97%90%EB%94%94%ED%84%B0%EC%97%90%EC%84%9C-%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EB%A1%9C%EB%93%9C-%EB%B0%A9%EB%B2%95%EC%9D%80-%EB%AD%90%EA%B0%80-%EC%B5%9C%EC%84%A0%EC%9D%BC%EA%B9%8C--fetch-vs-iframe)
+    + [4-4-2. 에디터에서 웹사이트 미리보기를 어떻게 구현할까? : `fetch` vs `iframe`](#4-4-2-%EC%97%90%EB%94%94%ED%84%B0%EC%97%90%EC%84%9C-%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EB%AF%B8%EB%A6%AC%EB%B3%B4%EA%B8%B0%EB%A5%BC-%EC%96%B4%EB%96%BB%EA%B2%8C-%EA%B5%AC%ED%98%84%ED%95%A0%EA%B9%8C--fetch-vs-iframe)
     + [4-4-3. 클릭만으로 웹사이트 요소의 id를 관리자 페이지로 가져오는 방법](#4-4-3-%ED%81%B4%EB%A6%AD%EB%A7%8C%EC%9C%BC%EB%A1%9C-%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EC%9A%94%EC%86%8C%EC%9D%98-id%EB%A5%BC-%EA%B4%80%EB%A6%AC%EC%9E%90-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%A1%9C-%EA%B0%80%EC%A0%B8%EC%98%A4%EB%8A%94-%EB%B0%A9%EB%B2%95)
 - [5. 레퍼런스 분석](#5-%EB%A0%88%ED%8D%BC%EB%9F%B0%EC%8A%A4-%EB%B6%84%EC%84%9D)
     + [5-1. 안정성 높은 SDK: 채널톡과 인터콤(Intercom)](#5-1-%EC%95%88%EC%A0%95%EC%84%B1-%EB%86%92%EC%9D%80-sdk-%EC%B1%84%EB%84%90%ED%86%A1%EA%B3%BC-%EC%9D%B8%ED%84%B0%EC%BD%A4intercom)
@@ -62,7 +62,7 @@
 
 <br>
 
-## 1-2. 손이 많이 가는 토스트 메시지 구현, 이제 누구나 쉽게 접근할 수 있도록.
+## 1-2. 손이 많이 가는 토스트 메시지, 이제 누구나 쉽게 만들 수 있도록.
 
 메시지 하나로 충분히 사용자를 붙잡을 수 있습니다. 하지만 직접 구현하기에 보기 보다 손이 많이 갑니다. 타겟을 강조하고, 토스트를 띄우고, 창이 줄어드면 위치도 바뀌고 등등. 또 언제나 수정이 발생할 수 있는데, 이 과정을 처음부터 반복하고 배포도 해야합니다.
 
@@ -159,19 +159,6 @@
 <table>
   <tr>
   <td width="50%">
-    <img width="100%" alt="프로젝트 목록" src="./src/asset/docs-feat-projectList.png">
-  </td>
-  <td width="50%">
-
-  **프로젝트 목록**
-  - 연동할 웹사이트를 프로젝트로 등록합니다.
-  - 현재 등록 웹사이트 URL은 고유해야 하며, 중복으로 등록할 수 없습니다.
-
-  </td>
-
-  </tr>
-  <tr>
-  <td width="50%">
     <img width="100%" alt="에디터 미리보기" src="./src/asset/docs-feat-editor.png">
   </td>
   <td width="50%">
@@ -184,6 +171,19 @@
   </td>
 
   </tr>
+  <tr>
+  <td width="50%">
+    <img width="100%" alt="프로젝트 목록" src="./src/asset/docs-feat-projectList.png">
+  </td>
+  <td width="50%">
+
+  **프로젝트 목록**
+  - 연동할 여러 웹사이트를 프로젝트 단위로 등록합니다.
+  - 현재 등록 웹사이트 URL은 고유해야 하며, 중복으로 등록할 수 없습니다.
+
+  </td>
+
+  </tr>
 </table>
 
 <br>
@@ -192,6 +192,12 @@
 # 4. 개발 과정
 
 ## 4-1. SDK 설계의 3가지 고민: 사용성, 쉬운 연동, 보안 (작성중)
+
+사용자의 서비스에 연동된 스크립트는 본 프로젝트(웰컴토스트)의 DB와 통신합니다. 웹사이트에 적용할 토스트 메시지 목록을 요청하고, 어드민 페이지로 저장된 토스트 목록을 응답으로 받습니다.
+
+<img width="100%" alt="토스트 생성 흐름" src="./src/asset/docs-architecture.png">
+
+<br>
 
 **사용자 시나리오**
 
@@ -233,8 +239,6 @@ function getWindowAndTargetSizePosition(targetElement) {
 
 ### 4-2-2. 타겟을 강조하는 배경, 토스트 메시지 동적으로 만들기 (오버레이, 팝오버 구현)
 
-배경 및 토스트 메시지의 반응형 대응 방법은, 유사 라이브러리 [driver.js](https://github.com/kamranahmedse/driver.js)의 소스 코드를 레퍼런스로 참고하였습니다.
-
 <img width="100%" alt="토스트 생성 흐름" src="./src/asset/docs-toast-flow.png">
 
 <br>
@@ -244,9 +248,7 @@ function getWindowAndTargetSizePosition(targetElement) {
 
 <br>
 
-배경은 SVG로 구현했습니다. 전체 화면을 덮되, 타겟 요소만 뚫려 있는 마스크 효과를 주기 위해, `SVG path`의 `fill-rule`을 `evenodd`로 설정했습니다.
-
-사용자가 화면을 스크롤하거나, 브라우저 창의 크기가 변하면 배경, 토스트 메시지의 속성을 모두 업데이트 해야합니다. 이에 scroll, resize event의 핸들러를 설정해서 실시간으로 SVG 속성을 업데이트 하고, innerHTML, style 속성을 업데이트 했습니다. 특히 브라우저 창 너비가 줄어들더라도 토스트 메시지가 화면을 벗어나지 않도록 위치를 보정하는 로직을 추가했습니다.
+배경은 SVG로 구현했습니다. 전체 화면을 덮되, 타겟 요소만 뚫려 있는 마스크 효과를 주기 위해, `SVG path`의 `fill-rule`을 `evenodd`로 설정했습니다. 사용자가 화면을 스크롤하거나, 브라우저 창의 크기가 변하면 배경, 토스트 메시지의 속성을 모두 업데이트 하도록 했습니다. 배경 및 토스트 메시지의 반응형 대응 방법은, 유사 라이브러리 [driver.js](https://github.com/kamranahmedse/driver.js)의 소스 코드를 레퍼런스로 참고하였습니다. 이에 scroll, resize event의 핸들러를 설정해서 실시간으로 SVG 속성을 업데이트 하고, innerHTML, style 속성을 업데이트 했습니다. 특히 브라우저 창 너비가 줄어들더라도 토스트 메시지가 화면을 벗어나지 않도록 위치를 보정하는 로직을 추가했습니다.
 
 요소 생성(`createElement`, `appendChild`), 속성 설정(`innerHTML`, `style`) 로직을 분리하여 중복으로 요소가 생성되는 케이스를 방지하고 관리가 용이한 구조를 만들었습니다.
 
@@ -331,7 +333,7 @@ function mutationCallback() {
 
 <br>
 
-### 4-3-2. 예상 보다 빈번한 DOM 변화에 대응하기 (Observer on/off 시점 구분)
+### 4-3-2. 예상보다 빈번한 DOM 변화에 대응하기 (Observer on/off 시점 구분)
 
 불필요한 콜백 함수 호출을 줄이기 위해, DOM 변화 감지가 필요하지 않은 시점을 구분했습니다.
 
@@ -357,9 +359,11 @@ function mutationCallback() {
 
 <br>
 
-### 4-4-2. 에디터에서 웹사이트 로드 방법은 뭐가 최선일까? : `fetch` vs `iframe`
+### 4-4-2. 에디터에서 웹사이트 미리보기를 어떻게 구현할까? : `fetch` vs `iframe`
 
-미리보기 구현을 위해 2가지 방식을 검토했습니다. 첫번째는 `fetch`로 웹사이트 URL의 HTML을 가져와 파싱하는 방식입니다.
+**결과적으로 iframe 방식을 선택했습니다.** 실제 웹사이트를 그대로 보면서, 토스트 메시지를 설정하고 미리 확인할 수 있는 더 나은 사용자 경험을 제공할 수 있기 때문입니다. 현재는 메시지 내용과 이미지 커스터마이징만 지원하지만, 추후 더 세밀한 스타일 설정까지 가능하도록 확장할 예정입니다. 미리보기 구현을 위해 2가지 방식을 검토한 사항은 다음과 같습니다.
+
+**첫번째는 `fetch`로 웹사이트 URL의 HTML을 가져와 파싱하는 방식입니다.**
 
 ```js
 const getData = async () => {
@@ -371,9 +375,9 @@ const getData = async () => {
 
 가볍고 구현이 단순하다는 장점이 있었습니다. HTML 코드만 가져와서 렌더링하기 때문에, 토스트 메시지 미리보기에 변화가 있을 때 마다 통신할 필요가 없습니다. 하지만 동적으로 생성되는 요소들을 표현할 수 없고, 실제 웹사이트와 스타일 혹은 동작이 완벽히 일치하지 않을 수 있다는 한계가 있었습니다. 이를 위해 매번 HTML 코드를 최신화 하거나 보완책이 필요했습니다.
 
-두 번째로 검토한 `iframe` 방식은 실제 웹사이트를 그대로 로드할 수 있다는 장점이 있습니다. 동적으로 생성되는 요소나 CSS 스타일, JavaScript 동작까지 모두 동일하게 표현할 수 있습니다. 사용자가 실제로 보게 될 화면과 미리보기 화면의 일치하는 정도를 높일 가장 확실한 방법이었습니다. 다만 cross-origin 통신 문제를 해결해야 했는데, [`Window.postMessage()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)를 활용해 이를 해결했습니다. Window 객체 사이에 안전하게 cross-origin 통신을 할 수 있게 지원하는 `Window.postMessage()`를 활용해 이를 검증할 수 있었습니다. 특히 보안을 위해 `targetOrigin`을 명확히 지정하여 의도한 대상과만 통신하도록 구현했습니다. MDN 공식 문서의 권장사항을 따라, 메시지 수신 대상을 특정함으로써 데이터 유출을 방지했습니다.
+**두 번째로 검토한 `iframe` 방식은 실제 웹사이트를 그대로 로드할 수 있다는 장점이 있습니다.**
 
-결과적으로 iframe 방식을 선택했습니다. 실제 웹사이트를 그대로 보면서, 토스트 메시지를 설정하고 미리 확인할 수 있는 더 나은 사용자 경험을 제공할 수 있기 때문입니다. 현재는 메시지 내용과 이미지 커스터마이징만 지원하지만, 추후 더 세밀한 스타일 설정까지 가능하도록 확장할 예정입니다.
+동적으로 생성되는 요소나 CSS 스타일, JavaScript 동작까지 모두 동일하게 표현할 수 있습니다. 사용자가 실제로 보게 될 화면과 미리보기 화면의 일치하는 정도를 높일 가장 확실한 방법이었습니다. 다만 cross-origin 통신 문제를 해결해야 했는데, [`Window.postMessage()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)를 활용해 이를 해결했습니다. Window 객체 사이에 안전하게 cross-origin 통신을 할 수 있게 지원하는 `Window.postMessage()`를 활용해 이를 검증할 수 있었습니다. 특히 보안을 위해 `targetOrigin`을 명확히 지정하여 의도한 대상과만 통신하도록 구현했습니다. MDN 공식 문서의 권장사항을 따라, 메시지 수신 대상을 특정함으로써 데이터 유출을 방지했습니다.
 
 ```js
 // postMessage() 파라미터 예시
@@ -382,8 +386,13 @@ targetWindow.postMessage(message, targetOrigin);
   // targetOrigin : targetWindow의 origin을 지정함
 ```
 
-(추가 - `postMessage()` 관련)
-`postMessage()`는 same-origin 정책을 안전하게 우회하는 기능을 제공하고 페이지와 페이지 안의 iframe 간의 통신에 사용되는 사례가 있어 검증된 방식이라 판단했습니다. 보안상 주의가 필요한 부분은 `tartgetOrigin`으로, 메시지를 수신할 window의 origin을 특정하는 것이 필요합니다. 이에 관리자 페이지와 스크립트 양측에 상수로 관리하여 안전한 통신이 되도록 구현했습니다. 특정한 대상을 지정하지 않으면 악의적인 사이트에 전송하는 데이터가 공개되어 버리기 때문입니다. MDN 공식 문서에서도 postMessage를 이용해 다른 윈도우로 데이터를 보낼 때, 항상  정확한 타겟 origin을 지정하도록 하고 있습니다.
+<br>
+
+`postMessage()` 활용을 결정한 맥락<br/>
+- same-origin 정책을 안전하게 우회하는 기능을 제공합니다. 페이지와 페이지 안의 iframe 간의 통신에 사용되는 사례가 있어 검증된 방식이라 판단했습니다.
+- 보안상 주의가 필요한 부분은 `tartgetOrigin`으로, 메시지를 수신할 window의 origin을 특정하는 것이 필요합니다.
+- 이에 관리자 페이지와 스크립트 양측에 상수로 관리하여 안전한 통신이 되도록 구현했습니다. 특정한 대상을 지정하지 않으면 악의적인 사이트에 전송하는 데이터가 공개되어 버리기 때문입니다.
+- MDN 공식 문서에서도 `postMessage`를 이용해 다른 윈도우로 데이터를 보낼 때, 항상  정확한 타겟 origin을 지정하도록 하고 있는 점을 적용했습니다.
 
 <br>
 
