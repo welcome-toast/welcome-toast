@@ -389,10 +389,14 @@ targetWindow.postMessage(message, targetOrigin);
 <br>
 
 `postMessage()` 활용을 결정한 맥락<br/>
-- same-origin 정책을 안전하게 우회하는 기능을 제공합니다. 페이지와 페이지 안의 iframe 간의 통신에 사용되는 사례가 있어 검증된 방식이라 판단했습니다.
+- `postMessage()`을 이용하면 교차 출처 window 객체 간에도 안전한 데이터 통신이 가능합니다.
+([TOAST UI - 교차 출처 문서간의 데이터 통신](https://ui.toast.com/posts/ko_20220831#%EA%B5%90%EC%B0%A8-%EC%B6%9C%EC%B2%98-%EB%AC%B8%EC%84%9C%EA%B0%84%EC%9D%98-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%86%B5%EC%8B%A0))
 - 보안상 주의가 필요한 부분은 `tartgetOrigin`으로, 메시지를 수신할 window의 origin을 특정하는 것이 필요합니다.
-- 이에 관리자 페이지와 스크립트 양측에 상수로 관리하여 안전한 통신이 되도록 구현했습니다. 특정한 대상을 지정하지 않으면 악의적인 사이트에 전송하는 데이터가 공개되어 버리기 때문입니다.
-- MDN 공식 문서에서도 `postMessage`를 이용해 다른 윈도우로 데이터를 보낼 때, 항상  정확한 타겟 origin을 지정하도록 하고 있는 점을 적용했습니다.
+  > Note: Always provide a specific targetOrigin, not *, if you know where the other window's document should be located. Failing to provide a specific target could disclose data to a malicious site. <br> [MDN - postMessage targetOtigin](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage#targetorigin)
+- 이에 `tartgetOrigin`를 관리자 페이지와 스크립트 양측에 상수로 관리하여 안전한 통신이 되도록 구현했습니다. 특정한 대상을 지정하지 않으면 악의적인 사이트에 전송하는 데이터가 공개되기 때문입니다.
+  ```js
+  const TARGET_ORIGIN = "https://welcome-toast.com";
+  ```
 
 <br>
 
