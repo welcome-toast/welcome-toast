@@ -23,6 +23,42 @@ let overlay = null;
 let targetElement = null;
 let messageFromPreview = "";
 
+window.welcometoast = {
+  getProject: async function (apiKey) {
+    try {
+      const origin = window.location.origin;
+      client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY, {
+        global: {
+          headers: { api_key: apiKey },
+        },
+      });
+
+      if (origin && origin !== "") {
+        setToastStyle();
+        handleLoadDoneMessageParent();
+
+        const { data: resultProject, error } = await client
+          .from("project")
+          .select("*")
+          .like("link", `%${origin}%`);
+        console.log("resultProject", resultProject);
+
+        if (resultProject === null) {
+          throw new Error(error);
+        }
+
+        getToastList(resultProject[0].id);
+      }
+    } catch (e) {
+      console.log(
+        "등록되지 않은 URL입니다. @welcome-toast 관리자 페이지에서 프로젝트 설정을 확인해주세요.",
+      );
+      console.error(e);
+    }
+    return;
+  },
+};
+
 const ancestorOrigins = window.location.ancestorOrigins;
 
 const observer = new MutationObserver(mutationCallback);
@@ -164,35 +200,6 @@ function applyToastAdminPreview() {
   window.addEventListener("scroll", handleOverlayWindowResizeScroll);
   window.addEventListener("scroll", handlePopoverWindowResizeScroll);
   window.addEventListener("click", handleRemoveToast);
-}
-
-async function getProject() {
-  try {
-    const origin = window.location.origin;
-    client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
-
-    if (origin && origin !== "") {
-      setToastStyle();
-      handleLoadDoneMessageParent();
-
-      const { data: resultProject, error } = await client
-        .from("project")
-        .select("*")
-        .like("link", `%${origin}%`);
-
-      if (resultProject.length === 0) {
-        throw new Error(error);
-      }
-
-      getToastList(resultProject[0].id);
-    }
-  } catch (e) {
-    console.log(
-      "등록되지 않은 URL입니다. @welcome-toast 관리자 페이지에서 프로젝트 설정을 확인해주세요.",
-    );
-    console.error(e);
-  }
-  return;
 }
 
 async function getToastList(projectId) {
@@ -488,7 +495,13 @@ function handleLoadDoneMessageParent() {
   return;
 }
 
-window.addEventListener("load", getProject);
+function welcometoastInit() {
+  if (window.welcometoastConfig && typeof window.welcometoastConfig.init === "function") {
+    window.welcometoastConfig.init();
+  }
+}
+
+window.addEventListener("load", welcometoastInit);
 window.addEventListener("message", (event) => {
   if (event.origin === TARGET_ORIGIN && ancestorOrigins.contains(TARGET_ORIGIN)) {
     messageFromPreview = event.data;
