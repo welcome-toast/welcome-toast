@@ -26,7 +26,8 @@
     "rules": {
       "recommended": true,
       "complexity": {
-        "noVoid": "error"
+        "noVoid": "error",
+        "useArrowFunction": "off"
       },
       "correctness": {
         "noUnusedImports": "error"
