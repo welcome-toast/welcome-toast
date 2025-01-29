@@ -477,13 +477,13 @@ function handleRemoveToast(event) {
 }
 
 function handleMessageParent(event) {
-  const target = JSON.parse(JSON.stringify(event.target.id));
+  const target = event.target.id;
   window.parent.postMessage({ target }, TARGET_ORIGIN);
   return;
 }
 
 function handleLoadDoneMessageParent() {
-  const isPreviewLoaded = JSON.parse(JSON.stringify(true));
+  const isPreviewLoaded = true;
   window.parent.postMessage({ isPreviewLoaded }, TARGET_ORIGIN);
   return;
 }
