@@ -58,10 +58,11 @@ window.welcometoast = {
 };
 
 const ancestorOrigins = window.location.ancestorOrigins;
+const isLoadedByWelcomeToastAdmin = ancestorOrigins.contains(TARGET_ORIGIN);
 
 const observer = new MutationObserver(mutationCallback);
 function mutationCallback() {
-  if (ancestorOrigins.contains(TARGET_ORIGIN)) {
+  if (isLoadedByWelcomeToastAdmin) {
     return;
   }
 
@@ -95,7 +96,7 @@ const config = {
 };
 
 function applyToast() {
-  if (ancestorOrigins.contains(TARGET_ORIGIN)) {
+  if (isLoadedByWelcomeToastAdmin) {
     return;
   }
   getFirstToast();
@@ -405,7 +406,7 @@ function handleToastButtonClick() {
   overlay.remove();
   popover.remove();
 
-  if (ancestorOrigins.contains(TARGET_ORIGIN)) {
+  if (isLoadedByWelcomeToastAdmin) {
     return;
   }
 
@@ -420,7 +421,7 @@ function handleToastButtonClick() {
 }
 
 function handleOverlayWindowResizeScroll() {
-  const { target_element_id, background_opacity } = ancestorOrigins.contains(TARGET_ORIGIN)
+  const { target_element_id, background_opacity } = isLoadedByWelcomeToastAdmin
     ? messageFromPreview
     : currentToastList[indexToast];
   const targetElement = document.getElementById(`${target_element_id}`);
@@ -440,7 +441,7 @@ function handleOverlayWindowResizeScroll() {
 }
 
 function handlePopoverWindowResizeScroll() {
-  const { target_element_id } = ancestorOrigins.contains(TARGET_ORIGIN)
+  const { target_element_id } = isLoadedByWelcomeToastAdmin
     ? messageFromPreview
     : currentToastList[indexToast];
   const targetElement = document.getElementById(`${target_element_id}`);
@@ -473,7 +474,7 @@ function handleRemoveToast(event) {
     overlay.remove();
     popover.remove();
 
-    if (ancestorOrigins.contains(TARGET_ORIGIN)) {
+    if (isLoadedByWelcomeToastAdmin) {
       return;
     }
     observer.observe(document.body, config);
@@ -482,14 +483,17 @@ function handleRemoveToast(event) {
 }
 
 function handleMessageParent(event) {
-  const target = event.target.id;
-  window.parent.postMessage({ target }, TARGET_ORIGIN);
-  return;
+  if (isLoadedByWelcomeToastAdmin) {
+    const target = event.target.id;
+    window.parent.postMessage({ target }, TARGET_ORIGIN);
+  }
 }
 
 function handleLoadDoneMessageParent(apiKey) {
-  const previewInfo = { previewApiKey: apiKey, isPreviewLoadSuccedd: true };
-  window.parent.postMessage({ previewInfo }, TARGET_ORIGIN);
+  if (isLoadedByWelcomeToastAdmin) {
+    const previewInfo = { previewApiKey: apiKey, isPreviewLoadSuccedd: true };
+    window.parent.postMessage({ previewInfo }, TARGET_ORIGIN);
+  }
 }
 
 function welcometoastInit() {
@@ -500,7 +504,7 @@ function welcometoastInit() {
 
 window.addEventListener("load", welcometoastInit);
 window.addEventListener("message", (event) => {
-  if (event.origin === TARGET_ORIGIN && ancestorOrigins.contains(TARGET_ORIGIN)) {
+  if (event.origin === TARGET_ORIGIN && isLoadedByWelcomeToastAdmin) {
     messageFromPreview = event.data;
     applyToastAdminPreview();
   }
