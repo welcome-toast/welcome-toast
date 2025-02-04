@@ -26,24 +26,22 @@ let messageFromPreview = "";
 window.welcometoast = {
   getProject: async function (apiKey) {
     try {
-      const origin = window.location.origin;
       client = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY, {
         global: {
           headers: { api_key: apiKey },
         },
       });
 
-      if (origin && origin !== "") {
+      if (apiKey && apiKey !== "") {
         setToastStyle();
-        handleLoadDoneMessageParent();
+        handleLoadDoneMessageParent(apiKey);
 
         const { data: resultProject, error } = await client
           .from("project")
           .select("*")
-          .like("link", `%${origin}%`);
-        console.log("resultProject", resultProject);
+          .eq("api_key", apiKey);
 
-        if (resultProject === null) {
+        if (resultProject === undefined) {
           throw new Error(error);
         }
 
@@ -51,7 +49,7 @@ window.welcometoast = {
       }
     } catch (e) {
       console.log(
-        "등록되지 않은 URL입니다. @welcome-toast 관리자 페이지에서 프로젝트 설정을 확인해주세요.",
+        "프로젝트를 불러오는 데 실패했습니다. @welcome-toast 관리자 페이지에서 프로젝트 설정을 확인해주세요.",
       );
       console.error(e);
     }
@@ -489,10 +487,9 @@ function handleMessageParent(event) {
   return;
 }
 
-function handleLoadDoneMessageParent() {
-  const isPreviewLoaded = true;
-  window.parent.postMessage({ isPreviewLoaded }, TARGET_ORIGIN);
-  return;
+function handleLoadDoneMessageParent(apiKey) {
+  const previewInfo = { previewApiKey: apiKey, isPreviewLoadSuccedd: true };
+  window.parent.postMessage({ previewInfo }, TARGET_ORIGIN);
 }
 
 function welcometoastInit() {
