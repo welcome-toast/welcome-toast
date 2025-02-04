@@ -37,7 +37,7 @@ window.welcometoast = {
         handleLoadDoneMessageParent(apiKey);
 
         const { data: resultProject, error } = await client
-          .from("project")
+          .from("project_sample")
           .select("*")
           .eq("api_key", apiKey);
 
@@ -204,7 +204,7 @@ async function getToastList(projectId) {
   try {
     if (projectId) {
       const { data: resultToastList, error } = await client
-        .from("toast")
+        .from("toast_sample")
         .select("*")
         .eq("project_id", projectId)
         .order("id", { ascending: true });
