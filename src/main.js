@@ -13,6 +13,23 @@ const SUPABASE_API_KEY =
 let client;
 
 const WHITE_SPACE = 5;
+const IMAGE_HEIGHT = "height: 10";
+const FOOTER_WIDTH = "width: 60%";
+const MARGIN_BOTTOM = "margin-bottom: 0.625rem";
+const HEADER_FONT_SIZE = "font-size: 1.3rem !important";
+const DESCRIPTION_FONT_SIZE = "font-size: 1rem !important";
+const FONT_NORMAL = "font-weight: normal !important";
+const FONT_BOLD = "font-weight: bold !important";
+const BACKGROUND_MAIN_COLOR = "background-color: white !important; color: black !important";
+const SHADOW_STYLE = "box-shadow: 0 0.06rem 0.625rem !important; color: #1a1a1a !important";
+const DISPLAY_FLEX_BETWEEN = "display: flex; justify-content: space-between";
+const BUTTON_BASIC_STYLE =
+  "padding: 0.6em 1.2em !important; background-color: white !important; cursor: pointer !important; transition: border-color 0.25s !important; border-radius: 0.5rem !important";
+const BORDER_WIDTH = "border: 0.06rem solid transparent";
+const POPOVER_STYLE =
+  "max-height: 15.625rem !important; min-width: 15.625rem !important; max-width: 15.625rem !important; padding: 0.95rem; border: 0.06rem; margin: 0.3rem; font-family: Arial !important";
+const OVER_FLOW_CLIP =
+  "overflow: clip !important; overflow-wrap: break-word !important; word-break: break-all !important";
 const FIRST_TOAST_INDEX = 0;
 let indexToast = FIRST_TOAST_INDEX;
 const totalToastList = [];
@@ -342,41 +359,38 @@ function setPopover(targetElement, message_title, message_body, image_url) {
   const xTargetInLayout = t.xTarget + t.widthTarget + WHITE_SPACE;
 
   popoverImage.innerHTML = null;
-  popoverHeader.innerHTML = `<span style="font-weight: bold !important; font-size: 1.3rem !important;">${message_title}</span>`;
-  popoverDescription.innerHTML = `<span style="font-weight: normal !important; font-size: 1rem !important;">${message_body}</span>`;
-  popoverFooter.innerHTML = `<div style="width: 60%"></div><button id="welcomeToastPopoverButton" type="button" style="font-weight: bold !important;">확인</button>`;
+  popoverHeader.innerHTML = `<span style="${FONT_BOLD}; ${HEADER_FONT_SIZE}">${message_title}</span>`;
+  popoverDescription.innerHTML = `<span style="${FONT_NORMAL}; ${DESCRIPTION_FONT_SIZE}">${message_body}</span>`;
+  popoverFooter.innerHTML = `<div style="${FOOTER_WIDTH}"></div><button id="welcomeToastPopoverButton" type="button" style="${FONT_BOLD}">확인</button>`;
 
   if (image_url !== "") {
-    popoverImage.innerHTML = `<img src=${image_url} alt="popoverFooter" width="100%" style="margin-bottom: 10px;" />`;
+    popoverImage.innerHTML = `<img src="${image_url}" alt="popoverImage" style="${IMAGE_HEIGHT}; ${MARGIN_BOTTOM}" />`;
   }
 
   const welcomeToastPopoverButton = document.getElementById("welcomeToastPopoverButton");
   welcomeToastPopoverButton.addEventListener("click", handleToastButtonClick);
 
   if (gapRight < 300) {
-    popover.style = `position: absolute; top: ${t.yTarget + t.heightTarget + WHITE_SPACE + window.scrollY}px; right: ${w.widthViewport - t.xTarget - t.widthTarget - WHITE_SPACE}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 250px !important; max-width: 250px !important; padding: 15px; border: 1px; margin: 5px; border-radius: 5%; background: #3D54E1 !important; color: white !important; box-shadow: 0 1px 10px #0006; z-index: 1000000; overflow: clip; overflow-wrap: break-word; word-break: break-all;`;
-    popoverHeader.style = "margin-bottom: 10px;";
-    popoverDescription.style = "margin-bottom: 10px;";
-    popoverFooter.style = "display: flex; align-items: center; justify-content: space-between;";
-    welcomeToastPopoverButton.style =
-      "border-radius: 8px !important; border: 1px solid transparent; padding: 0.6em 1.2em !important; color: #3D54E1 !important; font-size: 1em !important; font-weight: bold !important; background-color: white !important; cursor: pointer !important; transition: border-color 0.25s !important;";
+    popover.style = `position: absolute; top: ${t.yTarget + t.heightTarget + WHITE_SPACE + window.scrollY}px; right: ${w.widthViewport - t.xTarget - t.widthTarget - WHITE_SPACE}px; flex: auto; flex-direction: column; ${POPOVER_STYLE}; border-radius: 5%; ${BACKGROUND_MAIN_COLOR}; color: white !important; ${SHADOW_STYLE}; z-index: 1000000; ${OVER_FLOW_CLIP};`;
+    popoverHeader.style = `${MARGIN_BOTTOM};`;
+    popoverDescription.style = `${MARGIN_BOTTOM};`;
+    popoverFooter.style = `align-items: center !important; ${DISPLAY_FLEX_BETWEEN};`;
+    welcomeToastPopoverButton.style = `${BUTTON_BASIC_STYLE}; ${BORDER_WIDTH}; ${BACKGROUND_MAIN_COLOR}; ${DESCRIPTION_FONT_SIZE}; ${FONT_BOLD};`;
     return;
   }
 
-  popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; max-height: 250px; min-width: 250px !important; max-width: 250px !important; padding: 15px; font-family: Arial !important; border: 1px !important; margin: 5px; border-radius: 5% !important; background: #3D54E1 !important; color: white !important; box-shadow: 0 1px 10px #0006 !important; z-index: 1000000; overflow: clip !important; overflow-wrap: break-word !important; word-break: break-all !important;`;
-  popoverHeader.style = "margin-bottom: 10px;";
-  popoverDescription.style = "margin-bottom: 10px;";
-  popoverFooter.style =
-    "display: flex; align-items: end !important; justify-content: space-between;";
-  welcomeToastPopoverButton.style =
-    "border-radius: 8px !important; border: 1px solid transparent; padding: 0.6em 1.2em !important; color: #3D54E1 !important; font-size: 1em !important; font-weight: bold !important; background-color: white !important; cursor: pointer !important; transition: border-color 0.25s !important;";
+  popover.style = `position: absolute; top: ${t.yTarget}px; left: ${xTargetInLayout}px; flex: auto; flex-direction: column; border-radius: 5% !important; color: white !important; z-index: 1000000; ${POPOVER_STYLE}; ${BACKGROUND_MAIN_COLOR}; ${SHADOW_STYLE}; ${OVER_FLOW_CLIP};`;
+  popoverHeader.style = `${MARGIN_BOTTOM};`;
+  popoverDescription.style = `${MARGIN_BOTTOM};`;
+  popoverFooter.style = `align-items: end !important; ${DISPLAY_FLEX_BETWEEN};`;
+  welcomeToastPopoverButton.style = `${BUTTON_BASIC_STYLE}; ${BORDER_WIDTH}; ${BACKGROUND_MAIN_COLOR}; ${DESCRIPTION_FONT_SIZE}; ${FONT_BOLD};`;
   return;
 }
 
 function setToastStyle() {
+  const BORDER_COLOR = "border-color: #1a1a1a !important";
   const stylesheet = document.createElement("style");
-  const style =
-    "#welcomeToastPopoverButton:hover { border-color: #646cff !important; } #welcomeToastPopoverButton:focus, #welcomeToastPopoverButton:focus-visible { outline: 4px auto -webkit-focus-ring-color !important; }";
+  const style = `#welcomeToastPopoverButton:hover { ${BORDER_COLOR}; } #welcomeToastPopoverButton:focus, #welcomeToastPopoverButton:focus-visible { outline: 0.25rem auto -webkit-focus-ring-color !important; }`;
 
   stylesheet.appendChild(document.createTextNode(style));
   stylesheet.type = "text/css";
