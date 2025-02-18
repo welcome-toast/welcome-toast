@@ -208,7 +208,7 @@ async function getToastList(projectId) {
         .from("toast_sample")
         .select("*")
         .eq("project_id", projectId)
-        .order("id", { ascending: true });
+        .order("created_at", { ascending: true });
 
       if (resultToastList.length === 0) {
         throw new Error(error);
